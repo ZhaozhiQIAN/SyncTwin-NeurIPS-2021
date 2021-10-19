@@ -1,0 +1,28 @@
+sync6d
+Full model
+Gini 0.241 (0.017)
+Ent 0.482 (0.034)
+N Matched 1.830 (0.073)
+MIS 0.140 (0.025)
+Wrong proba 0.132 (0.022)
+
+ Prognostic None
+Gini 0.267 (0.018)
+Ent 0.548 (0.037)
+N Matched 1.930 (0.080)
+MIS 0.135 (0.024)
+Wrong proba 0.130 (0.022)
+
+ Prognostic-recon
+Gini 0.306 (0.018)
+Ent 0.631 (0.039)
+N Matched 2.080 (0.086)
+MIS 0.310 (0.033)
+Wrong proba 0.292 (0.029)
+
+ SC
+Gini 0.862 (0.006)
+Ent 2.274 (0.029)
+N Matched 7.054 (0.110)
+MIS 0.238 (0.031)
+Wrong proba 0.233 (0.014)

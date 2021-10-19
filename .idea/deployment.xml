@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData">
+    <serverData>
+      <paths name="zq224@gauss.damtp.cam.ac.uk">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/zq224/WS/synctwin-submit" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>
