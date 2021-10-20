@@ -35,8 +35,6 @@ do
     nohup python -u pkpd_sim3_model_training.py --sim_id=${sim_id} --regular=False --seed=100 --model_id=-prognostic-recon --reduced_fine_tune=True --lam_recon=0 --pretrain_Y=True --itr=2 --linear_decoder=True  > models/${sim_id}-prognostic_recon.txt &
 done
 
-
-
 # summarize results
 
 bash summarize_one_sim.sh sync1-miss-0.3
