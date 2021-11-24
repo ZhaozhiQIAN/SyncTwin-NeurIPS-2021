@@ -1,11 +1,11 @@
 import torch
 import torch.nn as nn
-from config import DEVICE, D_TYPE
+
+from config import D_TYPE, DEVICE
 
 
 class CFR(nn.Module):
-    def __init__(self, n_unit, n_treated, lam_dist=1.,
-                 encoder=None, decoder_Y=None, device=DEVICE, dtype=D_TYPE):
+    def __init__(self, n_unit, n_treated, lam_dist=1.0, encoder=None, decoder_Y=None, device=DEVICE, dtype=D_TYPE):
         super(CFR, self).__init__()
 
         self.n_unit = n_unit
@@ -18,7 +18,7 @@ class CFR(nn.Module):
         # regularization strength of distributional distance
         self.lam_dist = lam_dist
         self.p = 0.5
-        self.sig = 1.
+        self.sig = 1.0
 
     def check_device(self, *args):
         a_list = []
@@ -54,13 +54,13 @@ class CFR(nn.Module):
         C = self.get_representation(x, t, mask)
         y_hat = self.get_prognostics(C, t, y_mask)
 
-        y_control = y[:, :self.n_unit, :]
+        y_control = y[:, : self.n_unit, :]
 
-        p_loss = self.prognostic_loss(y_control, y_hat[:, :self.n_unit, :])
+        p_loss = self.prognostic_loss(y_control, y_hat[:, : self.n_unit, :])
 
         if self.lam_dist != 0:
-            C_c = C[:self.n_unit, :]
-            C_t = C[self.n_unit:, :]
+            C_c = C[: self.n_unit, :]
+            C_t = C[self.n_unit :, :]
             mmd = mmd2_rbf(C_c, C_t, self.p, self.sig)
             p_loss = p_loss + mmd
 
@@ -70,8 +70,8 @@ class CFR(nn.Module):
         x, t, mask, y, y_mask = self.check_device(x, t, mask, y, y_mask)
         C = self.get_representation(x, t, mask)
         y_hat = self.get_prognostics(C, t, y_mask)
-        y_hat = y_hat[:, self.n_unit:, :]
-        y = y[:, self.n_unit:, :]
+        y_hat = y_hat[:, self.n_unit :, :]
+        y = y[:, self.n_unit :, :]
 
         te = y - y_hat
         return te
@@ -84,8 +84,8 @@ def mmd2_rbf(Xc, Xt, p, sig):
     Kct = torch.exp(-pdist2sq(Xc, Xt) / (sig ** 2))
     Ktt = torch.exp(-pdist2sq(Xt, Xt) / (sig ** 2))
 
-    m = Xc.shape[0] * 1.
-    n = Xt.shape[0] * 1.
+    m = Xc.shape[0] * 1.0
+    n = Xt.shape[0] * 1.0
 
     mmd = ((1.0 - p) ** 2) / (m * (m - 1.0)) * (torch.sum(Kcc) - m)
     mmd = mmd + (p ** 2) / (n * (n - 1.0)) * (torch.sum(Ktt) - n)
@@ -102,5 +102,3 @@ def pdist2sq(X, Y):
     ny = torch.sum(Y ** 2, dim=1).unsqueeze(1)
     D = (C + ny.T) + nx
     return D
-
-

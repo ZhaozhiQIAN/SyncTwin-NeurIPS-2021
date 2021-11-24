@@ -32,12 +32,12 @@ class FilterLinear(nn.Module):
         if bias:
             self.bias = Parameter(torch.Tensor(out_features).to(device))
         else:
-            self.register_parameter('bias', None)
+            self.register_parameter("bias", None)
 
         self.reset_parameters()
 
     def reset_parameters(self):
-        stdv = 1. / math.sqrt(self.weight.size(1))
+        stdv = 1.0 / math.sqrt(self.weight.size(1))
         self.weight.data.uniform_(-stdv, stdv)
         if self.bias is not None:
             self.bias.data.uniform_(-stdv, stdv)
@@ -46,10 +46,17 @@ class FilterLinear(nn.Module):
         return F.linear(x, self.filter_square_matrix.mul(self.weight), self.bias)
 
     def __repr__(self):
-        return self.__class__.__name__ + '(' \
-               + 'in_features=' + str(self.in_features) \
-               + ', out_features=' + str(self.out_features) \
-               + ', bias=' + str(self.bias is not None) + ')'
+        return (
+            self.__class__.__name__
+            + "("
+            + "in_features="
+            + str(self.in_features)
+            + ", out_features="
+            + str(self.out_features)
+            + ", bias="
+            + str(self.bias is not None)
+            + ")"
+        )
 
 
 class GRUD(nn.Module):
@@ -85,7 +92,6 @@ class GRUD(nn.Module):
         self.identity = torch.eye(input_size).to(device)
         self.zeros = Variable(torch.zeros(input_size).to(device))
         self.zeros_hidden = Variable(torch.zeros(hidden_size).to(device))
-
 
         self.zl = nn.Linear(input_size + hidden_size + self.mask_size, hidden_size).to(device)
         self.rl = nn.Linear(input_size + hidden_size + self.mask_size, hidden_size).to(device)
@@ -138,11 +144,13 @@ class GRUD(nn.Module):
 
         outputs = None
         for i in range(step_size):
-            Hidden_State = self.step(torch.squeeze(X[:, i:i + 1, :])
-                                     , torch.squeeze(X_last_obsv[:, i:i + 1, :])
-                                     , Hidden_State
-                                     , torch.squeeze(Mask[:, i:i + 1, :])
-                                     , torch.squeeze(Delta[:, i:i + 1, :]))
+            Hidden_State = self.step(
+                torch.squeeze(X[:, i : i + 1, :]),
+                torch.squeeze(X_last_obsv[:, i : i + 1, :]),
+                Hidden_State,
+                torch.squeeze(Mask[:, i : i + 1, :]),
+                torch.squeeze(Delta[:, i : i + 1, :]),
+            )
             if outputs is None:
                 outputs = Hidden_State.unsqueeze(1)
             else:
@@ -171,7 +179,5 @@ class GRUD(nn.Module):
             last_mask = y_mask[i - 1, ...].to(last_y_mat)
             last_y_mat[i, ...] = last_y_mat[i, ...] + last_y_mat[i - 1, ...] * (1 - last_mask)
 
-        gru_d_input = torch.cat((y, last_y_mat, y_mask.to(y), t_delta_mat), dim=2)\
-            .permute((1, 2, 0, 3)).to(self.device)
+        gru_d_input = torch.cat((y, last_y_mat, y_mask.to(y), t_delta_mat), dim=2).permute((1, 2, 0, 3)).to(self.device)
         return gru_d_input
-

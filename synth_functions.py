@@ -6,13 +6,14 @@ https://github.com/SucreRouge/synth_control
 """
 
 from __future__ import division
-from matplotlib import colors as mcolors
+
 import matplotlib.pyplot as plt
 import numpy as np
-from sklearn import linear_model
-from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
-from numpy.linalg import svd, norm, inv
+from matplotlib import colors as mcolors
+from numpy.linalg import inv, norm, svd
 from scipy import stats
+from sklearn import linear_model
+from sklearn.model_selection import GridSearchCV, cross_val_score, train_test_split
 
 
 # singular value thresholding
@@ -35,8 +36,8 @@ def threshold_test(X, mu=1):
     U, s, V = np.linalg.svd(Y, full_matrices=True)
 
     # prescription threshold
-    #sigma_hat = np.var(Y, dtype=np.float64)
-    #mu = 2 * np.sqrt(n * (sigma_hat * p_hat + p_hat * (1 - p_hat)))
+    # sigma_hat = np.var(Y, dtype=np.float64)
+    # mu = 2 * np.sqrt(n * (sigma_hat * p_hat + p_hat * (1 - p_hat)))
 
     S = s[s >= mu]
     S_size = len(S)
@@ -192,18 +193,18 @@ def learn(X, year, num_sv=1, prior_param=0.5, method="linear"):
     elif method.lower() == "bayes" or method.lower() == "bayesian":
         print("Bayesian Method")
         # Posterior distribution parameters
-        #inv_var = 1 / np.var(y)
+        # inv_var = 1 / np.var(y)
         # print(inv_var)
         s_mean = np.mean(y)
         var = (1 / (len(y) - 1)) * np.sum(np.power(y - s_mean, 2))
         inv_var = 1 / var
 
-        #regr = linear_model.RidgeCV(fit_intercept=False)
-        #regr.fit(A, y)
-        #print(regr.alpha_ * inv_var)
-        #lmda_hat = regr.alpha_
+        # regr = linear_model.RidgeCV(fit_intercept=False)
+        # regr.fit(A, y)
+        # print(regr.alpha_ * inv_var)
+        # lmda_hat = regr.alpha_
         lmda_hat = forward_chain(A, y, "ridge")
-        #print(lmda_hat * inv_var)
+        # print(lmda_hat * inv_var)
         # print()
         prior_param = lmda_hat * inv_var
 

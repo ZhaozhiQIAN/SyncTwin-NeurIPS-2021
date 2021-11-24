@@ -2,9 +2,7 @@
 CODE ADAPTED FROM https://github.com/pumpikano/tf-dann/blob/master/flip_gradient.py
 """
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
 import tensorflow as tf
 from tensorflow.python.framework import ops
@@ -27,5 +25,6 @@ class FlipGradientBuilder(object):
 
         self.num_calls += 1
         return y
+
 
 flip_gradient = FlipGradientBuilder()

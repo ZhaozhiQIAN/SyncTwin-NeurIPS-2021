@@ -1,15 +1,32 @@
+import math
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import math
-from config import DEVICE, D_TYPE
+
 import GRUD
+from config import D_TYPE, DEVICE
+
 
 # former NSC
 class SyncTwin(nn.Module):
-    def __init__(self, n_unit, n_treated, reg_B=0., lam_express=1., lam_recon=0., lam_prognostic=0., tau=1.,
-                 encoder=None, decoder=None, decoder_Y=None, device=DEVICE, dtype=D_TYPE, reduce_gpu_memory=False,
-                 inference_only=False):
+    def __init__(
+        self,
+        n_unit,
+        n_treated,
+        reg_B=0.0,
+        lam_express=1.0,
+        lam_recon=0.0,
+        lam_prognostic=0.0,
+        tau=1.0,
+        encoder=None,
+        decoder=None,
+        decoder_Y=None,
+        device=DEVICE,
+        dtype=D_TYPE,
+        reduce_gpu_memory=False,
+        inference_only=False,
+    ):
         super(SyncTwin, self).__init__()
         assert not (reduce_gpu_memory and inference_only)
 
@@ -74,7 +91,7 @@ class SyncTwin(nn.Module):
         # mask[torch.arange(batch_index.shape[0]), batch_index] = 1.
 
         mask_inf = torch.zeros_like(B_reduced)
-        mask_inf[torch.arange(batch_ind.shape[0]), batch_ind] = torch.Tensor([float('-inf')])
+        mask_inf[torch.arange(batch_ind.shape[0]), batch_ind] = torch.Tensor([float("-inf")])
 
         B_reduced = B_reduced + mask_inf
         # softmax
@@ -125,7 +142,9 @@ class SyncTwin(nn.Module):
         return err_mse * self.lam_prognostic
 
     def forward(self, x, t, mask, batch_ind, y_batch, y_control, y_mask):
-        x, t, mask, batch_ind, y_batch, y_control, y_mask = self.check_device(x, t, mask, batch_ind, y_batch, y_control, y_mask)
+        x, t, mask, batch_ind, y_batch, y_control, y_mask = self.check_device(
+            x, t, mask, batch_ind, y_batch, y_control, y_mask
+        )
         C = self.get_representation(x, t, mask)
         x_hat = self.get_reconstruction(C, t, mask)
 
@@ -162,7 +181,6 @@ class RegularEncoder(nn.Module):
         # B, Dh
         C = torch.sum(h * attn_weight.unsqueeze(-1), dim=0)
         return C
-
 
 
 class GRUDEncoder(nn.Module):
@@ -237,7 +255,7 @@ class LSTMTimeDecoder(nn.Module):
         out_list = [out]
         # run the remaining iterations
         for t in range(self.max_seq_len - 1):
-            lstm_in = torch.cat((C.unsqueeze(0), time_encoded[(t+1):(t+2), ...]), dim=-1)
+            lstm_in = torch.cat((C.unsqueeze(0), time_encoded[(t + 1) : (t + 2), ...]), dim=-1)
             out, hidden = self.lstm(lstm_in, hidden)
             out = self.lin(out)
             out_list.append(out)
