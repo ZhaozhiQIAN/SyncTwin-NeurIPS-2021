@@ -16,6 +16,7 @@ dependencies:
   - r-synth=1.1_5
   - scikit-learn=1.0.1
   - scipy=1.7.1
+  - tqdm=4.62.3
   - pip:
     - gpy==1.10.0
     - numpy==1.18.5
