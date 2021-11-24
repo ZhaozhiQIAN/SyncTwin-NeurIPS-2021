@@ -7,6 +7,8 @@ import torch.nn.functional as F
 import GRUD
 from config import D_TYPE, DEVICE
 
+WRAP_INDEX_ON = True
+
 
 # former NSC
 class SyncTwin(nn.Module):
@@ -79,6 +81,19 @@ class SyncTwin(nn.Module):
         y_hat = self.decoder_Y(C, t, mask)
         return y_hat
 
+    def _wrap_index(self, ind_0, ind_1, tensor):
+        assert ind_0.dim() == ind_1.dim() == 1
+        assert tensor.dim() == 2
+        if torch.any(ind_0 >= tensor.shape[0]).item() is True:
+            ind_0 = ind_0 % (tensor.shape[0] + 1)
+            selector = ind_0 < tensor.shape[0]
+            ind_0, ind_1 = ind_0[selector], ind_1[selector]
+        if torch.any(ind_1 >= tensor.shape[1]).item() is True:
+            ind_1 = ind_1 % (tensor.shape[1] + 1)
+            selector = ind_1 < tensor.shape[1]
+            ind_0, ind_1 = ind_0[selector], ind_1[selector]
+        return ind_0, ind_1
+
     def get_B_reduced(self, batch_ind):
         batch_ind = self.check_device(batch_ind)[0]
 
@@ -91,7 +106,12 @@ class SyncTwin(nn.Module):
         # mask[torch.arange(batch_index.shape[0]), batch_index] = 1.
 
         mask_inf = torch.zeros_like(B_reduced)
-        mask_inf[torch.arange(batch_ind.shape[0]), batch_ind] = torch.Tensor([float("-inf")])
+        ind_0, ind_1 = torch.arange(batch_ind.shape[0]), batch_ind
+        if WRAP_INDEX_ON:
+            ind_0, ind_1 = self._wrap_index(ind_0, ind_1, mask_inf)
+        else:
+            raise NotImplementedError()
+        mask_inf[ind_0, ind_1] = torch.Tensor([float("-inf")])
 
         B_reduced = B_reduced + mask_inf
         # softmax
