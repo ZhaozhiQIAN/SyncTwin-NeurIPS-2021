@@ -6,8 +6,7 @@ import torch
 import torch.optim as optim
 
 import util.batching_utils as batching
-
-DEVICE = torch.device("cuda:" + str(1) if torch.cuda.is_available() else "cpu")
+from config import DEVICE
 
 
 def create_paths(*args):

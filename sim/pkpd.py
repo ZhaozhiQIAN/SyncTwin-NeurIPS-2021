@@ -3,7 +3,7 @@ import numpy.random
 import scipy.integrate
 import torch
 
-DEVICE = torch.device("cuda:" + str(1) if torch.cuda.is_available() else "cpu")
+from config import DEVICE
 
 
 def f(t, y, Kin, K, O, H, D50):

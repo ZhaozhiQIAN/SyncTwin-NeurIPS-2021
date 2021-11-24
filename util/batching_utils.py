@@ -2,7 +2,7 @@ import numpy as np
 import numpy.random
 import torch
 
-DEVICE = torch.device("cuda:" + str(1) if torch.cuda.is_available() else "cpu")
+from config import DEVICE
 
 
 def get_batch_all(batch_size, n_units_total, n_units, x, y, y_control, device=DEVICE):

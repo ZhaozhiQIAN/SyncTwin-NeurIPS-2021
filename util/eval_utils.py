@@ -36,6 +36,9 @@ def get_prediction(nsc, batch_ind_full, y_control, itr=500):
 
 
 def get_treatment_effect(nsc, batch_ind_full, y_full, y_control, itr=500):
+    batch_ind_full = batch_ind_full.to(nsc.B.device)
+    y_control = y_control.to(nsc.B.device)
+    y_full = y_full.to(nsc.B.device)
     y_hat_list = list()
     for i in range(itr):
         with torch.no_grad():

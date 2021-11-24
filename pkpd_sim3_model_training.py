@@ -199,6 +199,7 @@ for i in range(itr):
     train_utils.load_nsc(nsc, x_full_val, t_full_val, mask_full_val, batch_ind_full_val, model_path=model_path)
 
     effect_est, y_hat = eval_utils.get_treatment_effect(nsc, batch_ind_full_val, y_full_val, y_control_val)
+    y_control_val = y_control_val.to(y_hat.device)
     control_error = torch.mean(torch.abs(y_control_val - y_hat[:, :control_sample, :])).item()
     print("Control Y MAE: {}".format(control_error))
     control_error_list.append(control_error)

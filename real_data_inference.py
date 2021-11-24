@@ -7,6 +7,7 @@ import pandas as pds
 import torch
 
 import SyncTwin
+from config import DEVICE
 from util import eval_utils, io_utils, train_utils
 from util.batching_utils import get_split_inference, get_splits
 
@@ -62,7 +63,6 @@ print("Validation: ", n_units_val, n_treated_val, n_units_total_val)
 n_units_test, n_treated_test, n_units_total_test = io_utils.get_units(d1_test, d0_test)
 print("Testing: ", n_units_test, n_treated_test, n_units_total_test)
 
-DEVICE = torch.device("cpu")
 
 x_full, t_full, mask_full, batch_ind_full, y_full, y_control, y_mask_full, patid_full = io_utils.get_tensors(
     d1_train, d0_train, DEVICE
