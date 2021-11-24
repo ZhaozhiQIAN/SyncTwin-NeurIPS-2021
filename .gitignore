@@ -104,6 +104,9 @@ ENV/
 
 # Custom
 
+# IDE
+.vscode/
+
 # R-related.
 .Rproj.user
 .Rhistory
