@@ -16,14 +16,14 @@ from datasets import PandasDataset
 
 def remove_out_of_range(df, range_list):
     """Set any values out of range to NAN.
-  
-  Args:
-    - df: a wide format df (e.g. the result of data_loader)
-    - range_list: a list of dictionaries. Each dictionary has three keys 'variable', 'high' and 'low'.
-                  e.g. {'variable': 'aao2', 'high': 700., 'low':10.}
-  Returns: 
-    - df: dataset with invalid values set to NAN
-  """
+
+    Args:
+        - df: a wide format df (e.g. the result of data_loader)
+        - range_list: a list of dictionaries. Each dictionary has three keys 'variable', 'high' and 'low'.
+                        e.g. {'variable': 'aao2', 'high': 700., 'low':10.}
+    Returns:
+        - df: dataset with invalid values set to NAN
+    """
     if range_list is None:
         return df
     for f in range_list:
@@ -36,10 +36,10 @@ def remove_out_of_range(df, range_list):
 class FilterOutOfRange(BaseEstimator, DataPreprocessorMixin):
     """Set any values out of range to NAN.
 
-  Attributes:
-    - range_list: a list of dictionaries. Each dictionary has three keys 'variable', 'high' and 'low'.
-                  e.g. {'variable': 'aao2', 'high': 700., 'low':10.}
-  """
+    Attributes:
+        - range_list: a list of dictionaries. Each dictionary has three keys 'variable', 'high' and 'low'.
+                        e.g. {'variable': 'aao2', 'high': 700., 'low':10.}
+    """
 
     def __init__(self, range_list=None):
         self.range_list = None
@@ -58,13 +58,13 @@ class FilterOutOfRange(BaseEstimator, DataPreprocessorMixin):
 
     def fit_transform(self, dataset):
         """Replace the values outside of the range to NaN.
-    
-    Args:
-      - dataset: original dataset
-      
-    Returns:
-      - dataset: dataset without outlier
-    """
+
+        Args:
+            - dataset: original dataset
+
+        Returns:
+            - dataset: dataset without outlier
+        """
         if dataset.static_data is not None:
             static_data = remove_out_of_range(dataset.static_data, self.range_list)
         else:
@@ -79,13 +79,13 @@ class FilterOutOfRange(BaseEstimator, DataPreprocessorMixin):
 
 def remove_negative_value(df):
     """Replace negative values to NaN.
-  
-  Args:
-    - df: original data.
-  
-  Returns:
-    - df: data without negative value.
-  """
+
+    Args:
+        - df: original data.
+
+    Returns:
+        - df: data without negative value.
+    """
     num = df._get_numeric_data()
     num[num < 0] = np.nan
     return df
@@ -93,7 +93,7 @@ def remove_negative_value(df):
 
 class FilterNegative(BaseEstimator, DataPreprocessorMixin):
     """Replace the negative values to NaN.
-  """
+    """
 
     def fit(self, dataset):
         pass
@@ -103,13 +103,13 @@ class FilterNegative(BaseEstimator, DataPreprocessorMixin):
 
     def fit_transform(self, dataset):
         """Replace the negative values to NaN.
-    
-    Args:
-      - dataset: original dataset
-      
-    Returns:
-      - dataset: dataset without negative values
-    """
+
+        Args:
+            - dataset: original dataset
+
+        Returns:
+            - dataset: dataset without negative values
+        """
         if dataset.static_data is not None:
             static_data = remove_negative_value(dataset.static_data)
         else:
@@ -123,14 +123,14 @@ class FilterNegative(BaseEstimator, DataPreprocessorMixin):
 
 def confidence_interval(df, confidence_range):
     """Compute confidence interval of each variable.
-  
-  Args:
-    - df: original data.
-    - confidence_range: '90', '95', '99'
-    
-  Returns:
-    - output_range: computed confidence intervals
-  """
+
+    Args:
+        - df: original data.
+        - confidence_range: '90', '95', '99'
+
+    Returns:
+        - output_range: computed confidence intervals
+    """
     output_range = list()
     confidence_dict = {"90": 1.645, "95": 1.96, "99": 2.576}
     confidence_const = confidence_dict[str(confidence_range)]
@@ -147,10 +147,10 @@ def confidence_interval(df, confidence_range):
 
 class FilterOutOfConfidence(BaseEstimator, DataPreprocessorMixin):
     """Replace the values to NaN by confidence.
-  
-  Attributes:
-    - confidence_range: '90', '95', '99'
-  """
+
+    Attributes:
+        - confidence_range: '90', '95', '99'
+    """
 
     def __init__(self, confidence_range):
         self.confidence_range = None
@@ -162,10 +162,10 @@ class FilterOutOfConfidence(BaseEstimator, DataPreprocessorMixin):
 
     def fit(self, dataset):
         """Compute confidence intervals.
-    
-    Args:
-      - dataset: raw data
-    """
+
+        Args:
+          - dataset: raw data
+        """
         if dataset.static_data is not None:
             self.static_range = confidence_interval(dataset.static_data, self.confidence_range)
 
@@ -174,13 +174,13 @@ class FilterOutOfConfidence(BaseEstimator, DataPreprocessorMixin):
 
     def transform(self, dataset):
         """Replace the values outside of the confidence interval to NaN.
-    
-    Args:
-      - dataset: raw data
-      
-    Returns:
-      - dataset: dataset without values outside of the confidence interval
-    """
+
+        Args:
+            - dataset: raw data
+
+        Returns:
+              - dataset: dataset without values outside of the confidence interval
+        """
         if dataset.static_data is not None:
             static_data = remove_out_of_range(dataset.static_data, self.static_range)
         else:
@@ -195,12 +195,12 @@ class FilterOutOfConfidence(BaseEstimator, DataPreprocessorMixin):
 
     def fit_transform(self, dataset):
         """Replace the values outside of the confidence interval to NaN.
-    
-    Args:
-      - dataset: original dataset
-      
-    Returns:
-      - dataset: dataset without values outside of the confidence interval
-    """
+
+        Args:
+            - dataset: original dataset
+
+        Returns:
+            - dataset: dataset without values outside of the confidence interval
+        """
         self.fit(dataset)
         return self.transform(dataset)

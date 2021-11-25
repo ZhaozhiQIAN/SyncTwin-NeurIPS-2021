@@ -13,14 +13,14 @@ preprocess_parameters:
 - normalization: feature normalization
 - one_hot_encoding: input features that need to be one-hot encoded
 
-Returns:    
+Returns:
 - training and testing datasets
-  - temporal: temporal data
-  - static: static data
-  - label: label information
-  - treatment: treatment data
-  - time: measurement time information
-  
+    - temporal: temporal data
+    - static: static data
+    - label: label information
+    - treatment: treatment data
+    - time: measurement time information
+
 - feature_name: temporal and static feature names
 - normalization_parameters: MinMaxScaler parameters for recovering
 """
@@ -35,16 +35,18 @@ from utils.data_utils import list_diff, normalization, padding
 
 def one_hot_encoding_module(x, s, one_hot_encoding_features):
     """One hot encoding for selected features.
-  @depracated: OneHotEncoder
-  Args: 
-    - x: temporal features
-    - s: static features
-    - one_hot_encoding_features: list of features for one hot encoding
-  
-  Returns: 
-    - x: temporal features after one-hot encoding
-    - s: static features after one-hot encoding
-  """
+
+    @deprecated: OneHotEncoder
+
+    Args:
+        - x: temporal features
+        - s: static features
+        - one_hot_encoding_features: list of features for one hot encoding
+
+    Returns:
+        - x: temporal features after one-hot encoding
+        - s: static features after one-hot encoding
+    """
 
     if len(one_hot_encoding_features) > 0:
 
@@ -59,16 +61,18 @@ def one_hot_encoding_module(x, s, one_hot_encoding_features):
 
 def normalization_module(x, s):
     """Normalized selected features.
-  @depracated: MinMaxNormalizer
-  Args: 
-    - x: temporal features
-    - s: static features
-  
-  Returns: 
-    - x: temporal features after normalization
-    - s: static features after normalization
-    - norm_parameters: normalization parametres for renormalization
-  """
+
+    @deprecated: MinMaxNormalizer
+
+    Args:
+        - x: temporal features
+        - s: static features
+
+    Returns:
+        - x: temporal features after normalization
+        - s: static features after normalization
+        - norm_parameters: normalization parametres for renormalization
+    """
 
     temporal_col_names = x.drop(["id", "time"], axis=1).columns.values
     static_col_names = s.drop(["id"], axis=1).columns.values
@@ -89,15 +93,15 @@ def normalization_module(x, s):
 
 def data_division_module(x, s, preprocess_parameters):
     """Divide data into temporal, static, label, treatment, and time information.
-  
-  Args: 
-    - x: temporal features
-    - s: static features
-    - preprocess_parameters: problem, treatment, label_name are used in this function.
-  
-  Returns: 
-    - dataset: includes temporal, static, label, treatment, and time information.
-  """
+
+    Args:
+        - x: temporal features
+        - s: static features
+        - preprocess_parameters: problem, treatment, label_name are used in this function.
+
+    Returns:
+        - dataset: includes temporal, static, label, treatment, and time information.
+    """
 
     problem = preprocess_parameters["problem"]
     treatment_features = preprocess_parameters["treatment"]
@@ -138,14 +142,14 @@ def data_division_module(x, s, preprocess_parameters):
 
 def temporal_data_formatting(x, max_seq_len):
     """Returns numpy array for predictor model training and testing.
-  
-  Args:
-    - x: temporal data
-    - max_seq_len: maximum sequence length
-    
-  Returns: 
-    - x_hat: preprocessed temporal data
-  """
+
+    Args:
+        - x: temporal data
+        - max_seq_len: maximum sequence length
+
+    Returns:
+        - x_hat: preprocessed temporal data
+    """
 
     uniq_id = np.unique(x["id"])
 
@@ -169,37 +173,37 @@ def temporal_data_formatting(x, max_seq_len):
 
 def data_preprocess(train_x, train_s, test_x, test_s, preprocess_parameters):
     """Preprocess the data.
-  (1) One-hot encoding
-  (2) Normalization
-  (3) Data division
-  (4) Temporal data formatting
-  
-  Args:
-    - train_x: training temporal data
-    - train_s: training static data
-    - test_x: testing temporal data
-    - test_s: testing static data
-    
-    - preprocess_parameters: 
-      - problem: 'one-shot' or 'online'
-      - max_seq_len: maximum sequence length after padding
-      - label_name: the column name for the label(s)
-      - treatment: the column name for treatments
-      - normalization: feature normalization
-      - one_hot_encoding: features that needs one hot encoding
-    
-  Returns:    
-    - train_data: training dataset
-      - temporal: temporal data
-      - static: static data
-      - label: label information
-      - treatment: treatment data
-      - time: measurement time information
-      
-    - test_data: testing dataset
-    - feature_name: temporal and static feature names
-    - normalization_parameters: MinMaxScaler parameters for recovering
-  """
+    (1) One-hot encoding
+    (2) Normalization
+    (3) Data division
+    (4) Temporal data formatting
+
+    Args:
+        - train_x: training temporal data
+        - train_s: training static data
+        - test_x: testing temporal data
+        - test_s: testing static data
+
+        - preprocess_parameters:
+            - problem: 'one-shot' or 'online'
+            - max_seq_len: maximum sequence length after padding
+            - label_name: the column name for the label(s)
+            - treatment: the column name for treatments
+            - normalization: feature normalization
+            - one_hot_encoding: features that needs one hot encoding
+
+    Returns:
+        - train_data: training dataset
+            - temporal: temporal data
+            - static: static data
+            - label: label information
+            - treatment: treatment data
+            - time: measurement time information
+
+        - test_data: testing dataset
+        - feature_name: temporal and static feature names
+        - normalization_parameters: MinMaxScaler parameters for recovering
+    """
 
     # 1. One hot encoding
     one_hot_encoding_features = preprocess_parameters["one_hot_encoding"]

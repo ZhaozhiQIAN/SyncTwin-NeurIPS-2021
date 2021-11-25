@@ -13,19 +13,19 @@ from treatments.CRN.flip_gradient import flip_gradient
 class CRN_Base:
     def __init__(self, hyperparams, params, b_train_decoder=False, task=None):
         """
-    Base class that can be used to initialize the encoder or decoder network as part of the Counterfactual Recurrent
-    Network (CRN).
+        Base class that can be used to initialize the encoder or decoder network as part of the Counterfactual Recurrent
+        Network (CRN).
 
-    Args:
-      - hyperparams: dictionary with the hyperparameters specifying the architecture of the CRN encoder or decoder model.
-      - params: dictionary of parameters specifying the following dimensions needed for initilizing the placeholder
-        values of the TensorFlow graph: num_treatments (number of treatments), num_covariates (number of covariates),
-        num_outputs (number of outputs) and max_sequence_length.
-      - b_train_decoder: boolean value indicating whether to train decoder model.
-      - task: 'classification' or 'regression'
-      - static_mode: 'concatenate' or None
-      - time_mode: 'concatenate' or None
-    """
+        Args:
+            - hyperparams: dictionary with the hyperparameters specifying the architecture of the CRN encoder or decoder model.
+            - params: dictionary of parameters specifying the following dimensions needed for initilizing the placeholder
+                values of the TensorFlow graph: num_treatments (number of treatments), num_covariates (number of covariates),
+                num_outputs (number of outputs) and max_sequence_length.
+            - b_train_decoder: boolean value indicating whether to train decoder model.
+            - task: 'classification' or 'regression'
+            - static_mode: 'concatenate' or None
+            - time_mode: 'concatenate' or None
+        """
         self.br_size = hyperparams["br_size"]
         self.rnn_hidden_units = hyperparams["rnn_hidden_units"]
         self.fc_hidden_units = hyperparams["fc_hidden_units"]
@@ -69,11 +69,11 @@ class CRN_Base:
 
     def build_balancing_representation(self):
         """Process the inputs to the model (history of covariates and previous treatments ) using RNN with LSTM cell to
-    build the balancing representation.
+        build the balancing representation.
 
-    Returns:
-      - balancing_representation: balancing representation for each timestep in the sequence.
-    """
+        Returns:
+            - balancing_representation: balancing representation for each timestep in the sequence.
+        """
 
         self.rnn_input = tf.concat([self.current_covariates, self.previous_treatments], axis=-1)
         self.sequence_length = tf.cast(tf.reduce_sum(tf.reduce_max(self.active_entries, axis=2), axis=1), tf.int32)
@@ -107,12 +107,12 @@ class CRN_Base:
     def build_treatment_assignments_one_hot(self, balancing_representation):
         """Treatment classifier. Predicts treatment from the built representation.
 
-    Args:
-     - balancing_representation: balancing representation for each timestep in the sequence.
+        Args:
+            - balancing_representation: balancing representation for each timestep in the sequence.
 
-    Returns:
-      - treatment_prob_predictions: output probabilities for each treatment given the representation.
-    """
+        Returns:
+            - treatment_prob_predictions: output probabilities for each treatment given the representation.
+        """
         balancing_representation_gr = flip_gradient(balancing_representation, self.alpha)
 
         treatments_network_layer = tf.layers.dense(
@@ -131,12 +131,12 @@ class CRN_Base:
     def build_outcomes(self, balancing_representation):
         """Outcome predictor. Estimates potential outcomes given balancing representation.
 
-    Args:
-      - balancing_representation: balancing representation for each timestep in the sequence.
+        Args:
+            - balancing_representation: balancing representation for each timestep in the sequence.
 
-    Return:
-      - outcome_predictions: predicted factual outcomes.
-    """
+        Return:
+            - outcome_predictions: predicted factual outcomes.
+        """
         current_treatments_reshape = tf.reshape(self.current_treatments, [-1, self.num_treatments])
 
         outcome_network_input = tf.concat([balancing_representation, current_treatments_reshape], axis=-1)
@@ -152,10 +152,10 @@ class CRN_Base:
     def train(self, dataset_train, dataset_val):
         """Train the CRN encoder or decoder model.
 
-    Args:
-      - dataset_train: training dataset.
-      - dataset_val: validation dataset.
-    """
+        Args:
+            - dataset_train: training dataset.
+            - dataset_val: validation dataset.
+        """
 
         with tf.variable_scope(self.name_scope, reuse=tf.AUTO_REUSE):
             self.init_model()
@@ -235,10 +235,10 @@ class CRN_Base:
     def load_model(self, model_name, model_folder):
         """Load trained CRN model.
 
-    Args:
-      - model_name: name of saved model.
-      - model_folder: directory with saved model.
-    """
+        Args:
+            - model_name: name of saved model.
+            - model_folder: directory with saved model.
+        """
         with tf.variable_scope(self.name_scope, reuse=tf.AUTO_REUSE):
             self.init_model()
             self.balancing_representation = self.build_balancing_representation()
@@ -368,11 +368,11 @@ class CRN_Base:
     def get_balancing_reps(self, dataset):
         """Compute balancing representations for patients in the dataset.
 
-    Args:
-      - dataset: dataset with test patients
-    Returns:
-      - balancing representations at each timestep for patients in the dataset.
-    """
+        Args:
+            - dataset: dataset with test patients
+        Returns:
+            - balancing representations at each timestep for patients in the dataset.
+        """
 
         dataset_size = dataset["current_covariates"].shape[0]
         balancing_reps = np.zeros(shape=(dataset_size, self.max_sequence_length, self.br_size))
@@ -426,13 +426,13 @@ class CRN_Base:
     def get_predictions(self, dataset, b_with_uncertainty=False):
         """Estimate one-step-ahead patient outcomes.
 
-    Args:
-      - dataset: dataset with test patients.
-      - b_with_uncertanty: boolean indicating whether to return uncertainty estimates for the predictions
+        Args:
+            - dataset: dataset with test patients.
+            - b_with_uncertainty: boolean indicating whether to return uncertainty estimates for the predictions
 
-    Returns:
-      - predictions: predicted one-step-ahead outcomes for patients in the dataset.
-    """
+        Returns:
+            - predictions: predicted one-step-ahead outcomes for patients in the dataset.
+        """
         dataset_size = dataset["current_covariates"].shape[0]
 
         predictions_mean = np.zeros(shape=(dataset_size, self.max_sequence_length, self.num_outputs))
@@ -497,15 +497,15 @@ class CRN_Base:
 
     def get_autoregressive_sequence_predictions(self, test_data, b_with_uncertanty=False):
         """Estimate patient outcomes under a sequence of future treatments given their past history of treatment and
-       covariates. Can only be used for the decoder model.
+        covariates. Can only be used for the decoder model.
 
-    Args:
-      - test_data: dataset dictionary consisting of sequences of future treatments for which outcomes are estimated.
-      - b_with_uncertanty: boolean indicating whether to return uncertainty estimates for the predictions
+        Args:
+            - test_data: dataset dictionary consisting of sequences of future treatments for which outcomes are estimated.
+            - b_with_uncertanty: boolean indicating whether to return uncertainty estimates for the predictions
 
-    Returns:
-      - predicted_outputs: counterfactual outcomes for a sequence of future treatments.
-    """
+        Returns:
+            - predicted_outputs: counterfactual outcomes for a sequence of future treatments.
+        """
 
         encoder_output = test_data["encoder_output"]
         current_treatments = test_data["current_treatments"]
@@ -632,10 +632,10 @@ class CRN_Base:
     def save_network(self, model_dir, checkpoint_name):
         """Save trained network.
 
-    Args:
-      - model_dir: directory where to save the model.
-      - checkpoint_name: saved model name.
-    """
+        Args:
+            - model_dir: directory where to save the model.
+            - checkpoint_name: saved model name.
+        """
         varlist = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope=self.name_scope)
         saver = tf.train.Saver(var_list=varlist, max_to_keep=100000)
 
@@ -645,11 +645,11 @@ class CRN_Base:
     def load_network(self, tf_session, model_dir, checkpoint_name):
         """Load trained network into a TensorFlow session.
 
-    Args:
-      - tf_session: TensorFlow session.
-      - model_dir: directory with saved model.
-      - checkpoint_name: saved model name.
-    """
+        Args:
+            - tf_session: TensorFlow session.
+            - model_dir: directory with saved model.
+            - checkpoint_name: saved model name.
+        """
         load_path = os.path.join(model_dir, "{0}.ckpt".format(checkpoint_name))
         logging.info("Restoring model from {0}".format(load_path))
 

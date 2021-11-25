@@ -1,6 +1,6 @@
 """Normalization module.
 
-Jinsung Note: I made separate class for MinMaxScaler and StandardScaler 
+Jinsung Note: I made separate class for MinMaxScaler and StandardScaler
               even though they are similar (due to the following sklearn module)
               I also added renormalization (ReScaler) module as well.
 """
@@ -9,16 +9,16 @@ from base import BaseEstimator, DataPreprocessorMixin
 
 def normalizer(df, feature_names, normalizer_type):
     """Normalizer.
-    
-  Args:
-    - df: input data
-    - feature_names: features for normalization
-    - normalizer_type: minmax or standard
-    
-  Returns:
-    - df: normalized data
-    - norm_parameters: parameters for renomalization
-  """
+
+    Args:
+        - df: input data
+        - feature_names: features for normalization
+        - normalizer_type: minmax or standard
+
+    Returns:
+        - df: normalized data
+        - norm_parameters: parameters for renomalization
+    """
     for f in feature_names:
         assert f in df.columns
     assert normalizer_type in ["standard", "minmax"]
@@ -41,14 +41,14 @@ def normalizer(df, feature_names, normalizer_type):
 
 def renormalizer(df, norm_parameters):
     """Renormalizer.
-    
-  Args:
-    - df: input data
-    - norm_parameters: parameters for renomalization
-    
-  Returns:
-    - df: renormalized data
-  """
+
+    Args:
+        - df: input data
+        - norm_parameters: parameters for renomalization
+
+    Returns:
+        - df: renormalized data
+    """
     subtract_val = norm_parameters["subtract_val"]
     division_val = norm_parameters["division_val"]
 

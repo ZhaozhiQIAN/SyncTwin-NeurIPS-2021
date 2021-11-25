@@ -16,15 +16,15 @@ from treatments.CRN.data_utils import (
 class CRN_Model(BaseEstimator, PredictorMixin):
     def __init__(self, hyperparams_encoder=None, hyperparams_decoder=None, task=None, static_mode=None, time_mode=None):
         """
-    Initialize the Counterfactual Recurrent Network (CRN).
+        Initialize the Counterfactual Recurrent Network (CRN).
 
-    Args:
-      - hyperparams_encoder: dictionary with the hyperparameters specifying the architecture of the CRN encoder model.
-      - hyperparams_decoder: dictionary with the hyperparameters specifying the architecture of the CRN decoder model.
-      - task: 'classification' or 'regression'
-      - static_mode: 'concatenate' or None
-      - time_mode: 'concatenate' or None
-    """
+        Args:
+            - hyperparams_encoder: dictionary with the hyperparameters specifying the architecture of the CRN encoder model.
+            - hyperparams_decoder: dictionary with the hyperparameters specifying the architecture of the CRN decoder model.
+            - task: 'classification' or 'regression'
+            - static_mode: 'concatenate' or None
+            - time_mode: 'concatenate' or None
+        """
         super().__init__(task)
 
         self.task = task
@@ -37,13 +37,13 @@ class CRN_Model(BaseEstimator, PredictorMixin):
     def fit(self, dataset, projection_horizon=None, fold=0, train_split="train", val_split="val"):
         """Fit the treatment effects encoder model model.
 
-    Args:
-      - dataset: temporal, static, label, time, treatment information
-      - projection_horizon: number of future timesteps to use for training decoder model.
-      - fold: Cross validation fold
-      - train_split: training set splitting parameter
-      - valid_split: validation set splitting parameter
-    """
+        Args:
+            - dataset: temporal, static, label, time, treatment information
+            - projection_horizon: number of future timesteps to use for training decoder model.
+            - fold: Cross validation fold
+            - train_split: training set splitting parameter
+            - valid_split: validation set splitting parameter
+        """
         dataset_crn_train = data_preprocess(dataset, fold, train_split, self.static_mode, self.time_mode)
         dataset_crn_val = data_preprocess(dataset, fold, val_split, self.static_mode, self.time_mode)
 
@@ -88,14 +88,14 @@ class CRN_Model(BaseEstimator, PredictorMixin):
     def predict(self, dataset, fold=0, test_split="test"):
         """Return the one-step-ahead predicted outcomes on the test set. These are one-step-ahead predictions.
 
-    Args:
-      - dataset: temporal, static, label, time, treatment information
-      - fold: Test fold
-      - test_split: testing set splitting parameter
+        Args:
+            - dataset: temporal, static, label, time, treatment information
+            - fold: Test fold
+            - test_split: testing set splitting parameter
 
-    Returns:
-      - test_y_hat: predictions on testing set
-    """
+        Returns:
+            - test_y_hat: predictions on testing set
+        """
         dataset_crn_test = data_preprocess(dataset, fold, test_split, self.static_mode, self.time_mode)
         test_y_hat = self.encoder_model.get_predictions(dataset_crn_test)
         return test_y_hat
@@ -105,21 +105,21 @@ class CRN_Model(BaseEstimator, PredictorMixin):
     ):
         """Return the counterfactual trajectories for a patient and for the specified future treatment options.
 
-    Args:
-      - dataset: dataset with test patients
-      - patient_id: patient id of patient for which the counterfactuals are computed
-      - timestep: timestept in the patient trajectory where counterfactuals are predicted
-      - treatment_options: treatment options for computing the counterfactual trajectories; the length of the
-        sequence of treatment options needs to be projection_horizon + 1 where projection_horizon is the number of
-        future timesteps used for training decoder model.
-      - fold: test fold
-      - test_split: testing set splitting parameter
+        Args:
+            - dataset: dataset with test patients
+            - patient_id: patient id of patient for which the counterfactuals are computed
+            - timestep: timestept in the patient trajectory where counterfactuals are predicted
+            - treatment_options: treatment options for computing the counterfactual trajectories; the length of the
+                sequence of treatment options needs to be projection_horizon + 1 where projection_horizon is the number of
+                future timesteps used for training decoder model.
+            - fold: test fold
+            - test_split: testing set splitting parameter
 
-    Returns:
-      - history: history of previous outputs for the patient.
-      - counterfactual_trajectories: trajectories of counterfactual predictions for the specified future treatments
-        in the treatment_options
-    """
+        Returns:
+            - history: history of previous outputs for the patient.
+            - counterfactual_trajectories: trajectories of counterfactual predictions for the specified future treatments
+                in the treatment_options
+        """
         history, encoder_output, dataset_crn_decoder = data_preprocess_counterfactuals(
             encoder_model=self.encoder_model,
             dataset=dataset,
@@ -139,10 +139,10 @@ class CRN_Model(BaseEstimator, PredictorMixin):
     def save_model(self, model_dir, model_name):
         """Save the model to model_dir using the model_name.
 
-    Args:
-      - model_dir: directory where to save the model
-      - model_name: name of saved model
-    """
+        Args:
+            - model_dir: directory where to save the model
+            - model_name: name of saved model
+        """
         encoder_model_name = "encoder_" + model_name
         self.encoder_model.save_network(model_dir, encoder_model_name)
         pickle.dump(self.encoder_params, open(os.path.join(model_dir, "encoder_params_" + model_name + ".pkl"), "wb"))
@@ -159,12 +159,12 @@ class CRN_Model(BaseEstimator, PredictorMixin):
 
     def load_model(self, model_dir, model_name):
         """
-    Load and return the model from model_path
+        Load and return the model from model_path
 
-    Args:
-      - model_path:  dictionary containing model_dir (directory where to save the model) and model_name for the
-                     the saved encoder and deocder models
-    """
+        Args:
+            - model_path:  dictionary containing model_dir (directory where to save the model) and model_name for the
+                        the saved encoder and deocder models
+        """
         encoder_params = pickle.load(open(os.path.join(model_dir, "encoder_params_" + model_name + ".pkl"), "rb"))
         encoder_hyperparams = pickle.load(
             open(os.path.join(model_dir, "hyperparams_encoder_" + model_name + ".pkl"), "rb")

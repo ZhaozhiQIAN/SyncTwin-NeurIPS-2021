@@ -27,10 +27,10 @@ from utils.data_utils import (
 
 class OneHotEncoder(BaseEstimator, DataPreprocessorMixin):
     """Return one-hot encoded dataset.
-  
-  Attributes:
-    - one_hot_encoding_feature: features that need one-hot encoding.
-  """
+
+    Attributes:
+        - one_hot_encoding_feature: features that need one-hot encoding.
+    """
 
     def __init__(self, one_hot_encoding_features):
         self.one_hot_encoding_features = one_hot_encoding_features
@@ -40,13 +40,13 @@ class OneHotEncoder(BaseEstimator, DataPreprocessorMixin):
 
     def transform(self, dataset):
         """Transform original dataset to one-hot encoded data.
-    
-    Args:
-      - dataset: original PandasDataset
-    
-    Returns:
-      - dataset: one-hot encoded PandasDataset
-    """
+
+        Args:
+            - dataset: original PandasDataset
+
+        Returns:
+            - dataset: one-hot encoded PandasDataset
+        """
         if self.one_hot_encoding_features is not None:
             # For each feature
             for feature_name in self.one_hot_encoding_features:
@@ -66,7 +66,7 @@ class OneHotEncoder(BaseEstimator, DataPreprocessorMixin):
 
 class MinMaxNormalizer(BaseEstimator, DataPreprocessorMixin):
     """Normalize the data to make the range within [0, 1].
-  """
+    """
 
     def __init__(self):
         self.norm_parameters = None
@@ -95,13 +95,13 @@ class MinMaxNormalizer(BaseEstimator, DataPreprocessorMixin):
     def transform(self, dataset):
         """Transform original dataset to MinMax normalized dataset.
 
-    Args:
-      - dataset: original PandasDataset
+        Args:
+            - dataset: original PandasDataset
 
-    Returns:
-      - dataset: normalized PandasDataset
-      - norm_parameters: normalization parameters for renomalization
-    """
+        Returns:
+            - dataset: normalized PandasDataset
+            - norm_parameters: normalization parameters for renomalization
+        """
         # For temporal data
         x = dataset.temporal_data
         if x is not None:
@@ -116,23 +116,23 @@ class MinMaxNormalizer(BaseEstimator, DataPreprocessorMixin):
 
     def fit_transform(self, dataset):
         """Transform original dataset to MinMax normalized dataset.
-    
-    Args:
-      - dataset: original PandasDataset
-    
-    Returns:
-      - dataset: normalized PandasDataset
-      - norm_parameters: normalization parameters for renomalization
-    """
+
+        Args:
+            - dataset: original PandasDataset
+
+        Returns:
+            - dataset: normalized PandasDataset
+            - norm_parameters: normalization parameters for renomalization
+        """
         self.fit(dataset)
         return self.transform(dataset)
 
 
 class StandardNormalizer(BaseEstimator, DataPreprocessorMixin):
-    """Normalize the data to make mean = 0 and std = 1.  
-    
-  Very similar to MinMaxNormalizer. 
-  """
+    """Normalize the data to make mean = 0 and std = 1.
+
+    Very similar to MinMaxNormalizer.
+    """
 
     def __init__(self):
         self.norm_parameters = None
@@ -147,24 +147,24 @@ class StandardNormalizer(BaseEstimator, DataPreprocessorMixin):
 
     def fit_transform(self, dataset):
         """Transform original dataset to standard normalized dataset.
-    
-    Args:
-      - dataset: original PandasDataset
-    
-    Returns:
-      - dataset: normalized PandasDataset
-      - norm_parameters: normalization parameters for renomalization
-    """
+
+        Args:
+            - dataset: original PandasDataset
+
+        Returns:
+            - dataset: normalized PandasDataset
+            - norm_parameters: normalization parameters for renomalization
+        """
         self.fit(dataset)
         return self.transform(dataset)
 
 
 class ReNormalizer(BaseEstimator, DataPreprocessorMixin):
     """Recover the original data from normalized data.
-  
-  Attributes:
-    - norm_parameters: normalization parameters for renomalization
-  """
+
+    Attributes:
+        - norm_parameters: normalization parameters for renomalization
+    """
 
     def __init__(self, norm_parameters):
         self.temporal_norm_parameters = norm_parameters["temporal"]
@@ -178,13 +178,13 @@ class ReNormalizer(BaseEstimator, DataPreprocessorMixin):
 
     def fit_transform(self, dataset):
         """Transform normalized dataset to original dataset.
-    
-    Args:
-      - dataset: normalized PandasDataset
-    
-    Returns:
-      - dataset: original PandasDataset
-    """
+
+        Args:
+            - dataset: normalized PandasDataset
+
+        Returns:
+            - dataset: original PandasDataset
+        """
         # For temporal data
         if dataset.temporal_data is not None and self.temporal_norm_parameters is not None:
             dataset.temporal_data = renormalization(dataset.temporal_data, self.temporal_norm_parameters)
@@ -197,9 +197,10 @@ class ReNormalizer(BaseEstimator, DataPreprocessorMixin):
 
 class Normalizer(BaseEstimator, DataPreprocessorMixin):
     """Normalize the data.
-  
-  Attributes:
-    - normalizer_name: 'minmax' or 'standard'  """
+
+    Attributes:
+        - normalizer_name: 'minmax' or 'standard'
+    """
 
     def __init__(self, normalizer_type):
         self.normalizer_type = normalizer_type
@@ -221,28 +222,28 @@ class Normalizer(BaseEstimator, DataPreprocessorMixin):
 
     def fit_transform(self, dataset):
         """Transform original dataset to standard or minmax normalized dataset.
-    
-    Args:
-      - dataset: original PandasDataset
-    
-    Returns:
-      - dataset: normalized PandasDataset
-      - norm_parameters: normalization parameters for renomalization
-    """
+
+        Args:
+            - dataset: original PandasDataset
+
+        Returns:
+            - dataset: normalized PandasDataset
+            - norm_parameters: normalization parameters for renomalization
+        """
         self.fit(dataset)
         return self.transform(dataset)
 
 
 class ProblemMaker(BaseEstimator, DataPreprocessorMixin):
     """Define temporal, static, time, label, and treatment features.
-  
-  Attributes:
-    - problem: 'online' or 'one-shot'
-    - label: label names in list format
-    - max_seq_len: maximum sequence length
-    - treatment: the feature names for treatment features
-    - window: set labels for window time ahead prediction
-  """
+
+    Attributes:
+        - problem: 'online' or 'one-shot'
+        - label: label names in list format
+        - max_seq_len: maximum sequence length
+        - treatment: the feature names for treatment features
+        - window: set labels for window time ahead prediction
+    """
 
     def __init__(self, problem, label, max_seq_len, treatment=None, window=0):
         assert problem in ["online", "one-shot"]
@@ -255,12 +256,12 @@ class ProblemMaker(BaseEstimator, DataPreprocessorMixin):
     def pad_sequence(self, x):
         """Returns numpy array for predictor model training and testing after padding.
 
-    Args:
-      - x: temporal data in DataFrame
+        Args:
+            - x: temporal data in DataFrame
 
-    Returns:
-      - x_hat: preprocessed temporal data in 3d numpy array
-    """
+        Returns:
+            - x_hat: preprocessed temporal data in 3d numpy array
+        """
         uniq_id = np.unique(x["id"])
         x_hat = list()
         # For each patient
@@ -278,15 +279,15 @@ class ProblemMaker(BaseEstimator, DataPreprocessorMixin):
 
     def sliding_window_label(self, y):
         """Set sliding window label.
-    
-    Set labels for window ahead prediction.
-    
-    Args:
-      - y: labels
-    
-    Returns:
-      - y: sliding window label
-    """
+
+        Set labels for window ahead prediction.
+
+        Args:
+            - y: labels
+
+        Returns:
+            - y: sliding window label
+        """
         if self.window > 0:
             y[:, : (self.max_seq_len - self.window), :] = y[:, self.window :, :]
             y[:, (self.max_seq_len - self.window) :, :] = -1
@@ -300,15 +301,15 @@ class ProblemMaker(BaseEstimator, DataPreprocessorMixin):
 
     def fit_transform(self, dataset):
         """Transform the dataset based on the Pandas Dataframe to numpy array.
-    
-    Returned dataset has temporal, static, time, label and treatment features
-    
-    Args:
-      - dataset: original dataset
-      
-    Returns:
-      - dataset: defined dataset for the certain problem
-    """
+
+        Returned dataset has temporal, static, time, label and treatment features
+
+        Args:
+            - dataset: original dataset
+
+        Returns:
+            - dataset: defined dataset for the certain problem
+        """
         x = dataset.temporal_data
         s = dataset.static_data
 

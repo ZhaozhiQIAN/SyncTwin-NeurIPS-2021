@@ -11,11 +11,11 @@ from utils import concate_xs, concate_xt
 
 class BaseEstimator:
     """Base class for all estimators.
-  
-  All estimators should specify all the parameters that can be set
-  at the class level in their ``__init__`` as explicit keyword
-  arguments (no ``*args`` or ``**kwargs``).
-  """
+
+    All estimators should specify all the parameters that can be set
+    at the class level in their ``__init__`` as explicit keyword
+    arguments (no ``*args`` or ``**kwargs``).
+    """
 
     @classmethod
     def _get_param_names(cls):
@@ -42,17 +42,18 @@ class BaseEstimator:
 
     def get_params(self, deep=True):
         """Get parameters for this estimator.
-    
-    Parameters
-    ----------
-    deep : bool, default=True
-        If True, will return the parameters for this estimator and
-        contained subobjects that are estimators.
-    Returns
-    -------
-    params : mapping of string to any
-        Parameter names mapped to their values.
-    """
+
+        Parameters
+        ----------
+        deep : bool, default=True
+            If True, will return the parameters for this estimator and
+            contained subobjects that are estimators.
+
+        Returns
+        -------
+        params : mapping of string to any
+            Parameter names mapped to their values.
+        """
         out = dict()
         for key in self._get_param_names():
             try:
@@ -67,21 +68,22 @@ class BaseEstimator:
 
     def set_params(self, **params):
         """Set the parameters of this estimator.
-    
-    The method works on simple estimators as well as on nested objects
-    (such as pipelines). The latter have parameters of the form
-    ``<component>__<parameter>`` so that it's possible to update each
-    component of a nested object.
-    
-    Parameters
-    ----------
-    **params : dict
-        Estimator parameters.
-    Returns
-    -------
-    self : object
-        Estimator instance.
-    """
+
+        The method works on simple estimators as well as on nested objects
+        (such as pipelines). The latter have parameters of the form
+        ``<component>__<parameter>`` so that it's possible to update each
+        component of a nested object.
+
+        Parameters
+        ----------
+        **params : dict
+            Estimator parameters.
+
+        Returns
+        -------
+        self : object
+            Estimator instance.
+        """
         if not params:
             # Simple optimization to gain speed (inspect is slow)
             return self
@@ -134,22 +136,24 @@ class TransformerMixin:
 
     def fit_transform(self, X, y=None, **fit_params):
         """Fit to data, then transform it.
-    
-    Fits transformer to X and y with optional parameters fit_params
-    and returns a transformed version of X.
-    Parameters
-    ----------
-    X : ndarray of shape (n_samples, n_features)
-        Training set.
-    y : ndarray of shape (n_samples,), default=None
-        Target values.
-    **fit_params : dict
-        Additional fit parameters.
-    Returns
-    -------
-    X_new : ndarray array of shape (n_samples, n_features_new)
-        Transformed array.
-    """
+
+        Fits transformer to X and y with optional parameters fit_params
+        and returns a transformed version of X.
+
+        Parameters
+        ----------
+        X : ndarray of shape (n_samples, n_features)
+            Training set.
+        y : ndarray of shape (n_samples,), default=None
+            Target values.
+        **fit_params : dict
+            Additional fit parameters.
+
+        Returns
+        -------
+        X_new : ndarray array of shape (n_samples, n_features_new)
+            Transformed array.
+        """
         # non-optimized default implementation; override when a better
         # method is possible for a given clustering algorithm
         if y is None:
@@ -165,15 +169,16 @@ class DataPreprocessorMixin:
 
     def fit_transform(self, dataset):
         """Perform fit on df and returns a new X with invalid values filtered.
-    
-    Parameters
-    ----------
-    dataset : a data set
-        Input data.
-    Returns
-    -------
-    new dataset: Transformed data.
-    """
+
+        Parameters
+        ----------
+        dataset : a data set
+            Input data.
+
+        Returns
+        -------
+        new dataset: Transformed data.
+        """
         raise NotImplementedError
 
 
@@ -187,28 +192,30 @@ class PredictorMixin:
 
     def fit(self, dataset):
         """Perform fit on df.
-    
-    Parameters
-    ----------
-    dataset : a data set
-        Input data.
-    Returns
-    -------
-    None
-    """
+
+        Parameters
+        ----------
+        dataset : a data set
+            Input data.
+
+        Returns
+        -------
+        None
+        """
         raise NotImplementedError
 
     def predict(self, dataset):
         """Perform predict on df.
-    
-    Parameters
-    ----------
-    dataset : a data set
-        Input data.
-    Returns
-    -------
-    None
-    """
+
+        Parameters
+        ----------
+        dataset : a data set
+            Input data.
+
+        Returns
+        -------
+        None
+        """
         raise NotImplementedError
 
     def save_model(self, model_path):
@@ -227,17 +234,17 @@ class PredictorMixin:
     def _data_preprocess(self, dataset, fold, split):
         """Preprocess the dataset.
 
-    Returns feature and label.
+        Returns feature and label.
 
-    Args:
-      - dataset: temporal, static, label, time, treatment information
-      - fold: Cross validation fold
-      - split: 'train', 'valid' or 'test'
+        Args:
+            - dataset: temporal, static, label, time, treatment information
+            - fold: Cross validation fold
+            - split: 'train', 'valid' or 'test'
 
-    Returns:
-      - x: temporal feature
-      - y: labels
-    """
+        Returns:
+            - x: temporal feature
+            - y: labels
+        """
         # Set temporal, static, label, and time information
         x, s, y, t, _ = dataset.get_fold(fold, split)
 

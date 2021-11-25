@@ -4,13 +4,13 @@ import numpy as np
 def concate_xs(x, s):
     """Concatenate static features to temporal feature for every time point.
 
-  Args:
-    x: temporal features
-    s: static features
+    Args:
+        x: temporal features
+        s: static features
 
-  Returns:
-    concate_x: concatenate temporal and static features
-  """
+    Returns:
+        cate_x: concatenate temporal and static features
+    """
     concate_x = list()
 
     for i in range(len(s[:, 0])):
@@ -32,13 +32,13 @@ def concate_xs(x, s):
 def concate_xt(x, t):
     """Concatenate time feature to temporal feature for every time point.
 
-  Args:
-    x: temporal features
-    t: time feature
+    Args:
+        x: temporal features
+        t: time feature
 
-  Returns:
-    concate_x: concatenate temporal and time features
-  """
+    Returns:
+        concate_x: concatenate temporal and time features
+    """
     concate_x = list()
 
     for i in range(len(t[:, 0, 0])):
@@ -57,23 +57,23 @@ def data_preprocess_counterfactuals(
 ):
     """Preprocess the dataset for obtaining counterfactual predictions for sequences of future treatments.
 
-  Args:
-    - encoder_model: trained encoder model for initializing decoder
-    - dataset: temporal, static, label, time, treatment information
-    - patient_id: patient id of patient for which the counterfactuals are computed
-    - timestep: timestept in the patient trajectory where counterfactuals are predicted
-    - treatment_options: treatment options for computing the counterfactual trajectories
-    - fold: test fold
-    - test_split: testing set splitting parameter
-    - static_mode: 'concatenate' or None
-    - time_mode: 'concatenate' or None
+    Args:
+        - encoder_model: trained encoder model for initializing decoder
+        - dataset: temporal, static, label, time, treatment information
+        - patient_id: patient id of patient for which the counterfactuals are computed
+        - timestep: timestept in the patient trajectory where counterfactuals are predicted
+        - treatment_options: treatment options for computing the counterfactual trajectories
+        - fold: test fold
+        - test_split: testing set splitting parameter
+        - static_mode: 'concatenate' or None
+        - time_mode: 'concatenate' or None
 
-  Returns:
-    - patient_history: history of patient outcome until the specified timestep
-    - encoder_output: patient output for the first treatment in the treatment options; this one-step-ahead prediction
-      is made using the encoder model.
-    - dataset_crn_decoder: dataset that can be used to obtain the counterfactual predictions from the decoder model.
-  """
+    Returns:
+        - patient_history: history of patient outcome until the specified timestep
+        - encoder_output: patient output for the first treatment in the treatment options; this one-step-ahead prediction
+          is made using the encoder model.
+        - dataset_crn_decoder: dataset that can be used to obtain the counterfactual predictions from the decoder model.
+    """
     x, s, y, t, treat = dataset.get_fold(fold, split)
 
     max_sequence_length = x.shape[1]
@@ -142,16 +142,16 @@ def data_preprocess_counterfactuals(
 def data_preprocess(dataset, fold, split, static_mode, time_mode):
     """Preprocess the dataset.
 
-  Args:
-    - dataset: temporal, static, label, time, treatment information
-    - fold: Cross validation fold
-    - split: 'train', 'valid' or 'test'
-    - static_mode: 'concatenate' or None
-    - time_mode: 'concatenate' or None
+    Args:
+        - dataset: temporal, static, label, time, treatment information
+        - fold: Cross validation fold
+        - split: 'train', 'valid' or 'test'
+        - static_mode: 'concatenate' or None
+        - time_mode: 'concatenate' or None
 
-  Returns:
-    - dataset_crn: dataset dictionary for training the CRN.
-  """
+    Returns:
+        - dataset_crn: dataset dictionary for training the CRN.
+    """
     x, s, y, t, treat = dataset.get_fold(fold, split)
 
     if static_mode == "concatenate":
@@ -190,14 +190,14 @@ def data_preprocess(dataset, fold, split, static_mode, time_mode):
 def process_seq_data(dataset, states, projection_horizon):
     """Split the sequences in the training data to train the decoder.
 
-  Args:
-    - dataset: dataset with training data sequences
-    - states: encoder states used to initialize the decoder
-    - projection_horizon: number of future timesteps for training decoder
+    Args:
+        - dataset: dataset with training data sequences
+        - states: encoder states used to initialize the decoder
+        - projection_horizon: number of future timesteps for training decoder
 
-  Returns:
-    - dataset for training decoder
-  """
+    Returns:
+        - dataset for training decoder
+    """
 
     outputs = dataset["outputs"]
     sequence_lengths = dataset["sequence_lengths"]

@@ -27,14 +27,14 @@ DATA_DIR = os.path.join(ROOT_DIR, "../datasets/data/")
 
 def concate_xs(x, s):
     """Concatenate static features to temporal feature for every time point.
-  
-  Args:
-    x: temporal features
-    s: static features
-    
-  Returns:
-    concate_x: concatenate temporal and static features
-  """
+
+    Args:
+        x: temporal features
+        s: static features
+
+    Returns:
+        concate_x: concatenate temporal and static features
+    """
     concate_x = list()
 
     for i in range(len(s[:, 0])):
@@ -55,14 +55,14 @@ def concate_xs(x, s):
 
 def concate_xt(x, t):
     """Concatenate time feature to temporal feature for every time point.
-  
-  Args:
-    x: temporal features
-    t: time feature
-    
-  Returns:
-    concate_x: concatenate temporal and time features
-  """
+
+    Args:
+        x: temporal features
+        t: time feature
+
+    Returns:
+        concate_x: concatenate temporal and time features
+    """
     concate_x = list()
 
     for i in range(len(t[:, 0, 0])):
@@ -78,14 +78,14 @@ def concate_xt(x, t):
 
 def list_diff(list1, list2):
     """Compute list differences in order.
-  
-  Args:
-    - list1: first list
-    - list2: second list
-    
-  Returns:
-    - out: list difference
-  """
+
+    Args:
+        - list1: first list
+        - list2: second list
+
+    Returns:
+        - out: list difference
+    """
     out = []
     for ele in list1:
         if not ele in list2:
@@ -96,14 +96,14 @@ def list_diff(list1, list2):
 
 def padding(x, max_seq_len):
     """Sequence data padding.
-  
-  Args:
-    - x: temporal features
-    - max_seq_len: maximum sequence_length
-    
-  Returns:
-    - x_hat: padded temporal features
-  """
+
+    Args:
+        - x: temporal features
+        - max_seq_len: maximum sequence_length
+
+    Returns:
+        - x_hat: padded temporal features
+    """
     # Shape of the temporal features
     seq_len, dim = x.shape
     col_name = x.columns.values
@@ -122,13 +122,13 @@ def padding(x, max_seq_len):
 
 def index_reset(x):
     """Reset index in the pandas dataframe.
-  
-  Args:
-    x: original pandas dataframe
-    
-  Returns:
-    x: data with new indice
-  """
+
+    Args:
+        x: original pandas dataframe
+
+    Returns:
+        x: data with new indice
+    """
     x = x.reset_index()
     if "index" in x.columns:
         x = x.drop(columns=["index"])
@@ -138,14 +138,14 @@ def index_reset(x):
 
 def pd_list_to_np_array(x, drop_columns):
     """Convert list of pandas dataframes to 3d numpy array.
-  
-  Args:
-    - x: list of pandas dataframe
-    - drop_column: column names to drop before converting to numpy array
-    
-  Returns:
-    - x_hat: 3d numpy array
-  """
+
+    Args:
+        - x: list of pandas dataframe
+        - drop_column: column names to drop before converting to numpy array
+
+    Returns:
+        - x_hat: 3d numpy array
+    """
     x_hat = list()
     for component in x:
         temp = component.drop(columns=drop_columns)
@@ -158,15 +158,15 @@ def pd_list_to_np_array(x, drop_columns):
 
 def normalization(df, subtract_val, division_val):
     """Normalizer.
-    
-  Args:
-    - df: input data
-    - normalizer_type: 'minmax' or 'standard'
-    
-  Returns:
-    - df: normalized data
-    - norm_parameters: parameters for renomalization
-  """
+
+    Args:
+        - df: input data
+        - normalizer_type: 'minmax' or 'standard'
+
+    Returns:
+        - df: normalized data
+        - norm_parameters: parameters for renomalization
+    """
 
     for col_name in df.columns:
         df[col_name] = df[col_name] - subtract_val[col_name]
@@ -179,12 +179,12 @@ def get_normalization_param(df, normalizer_type):
     """Normalizer.
 
     Args:
-      - df: input data
-      - normalizer_type: 'minmax' or 'standard'
+        - df: input data
+        - normalizer_type: 'minmax' or 'standard'
 
     Returns:
-      - df: normalized data
-      - norm_parameters: parameters for renomalization
+        - df: normalized data
+        - norm_parameters: parameters for renomalization
     """
     assert normalizer_type in ["standard", "minmax"]
 
@@ -202,14 +202,14 @@ def get_normalization_param(df, normalizer_type):
 
 def renormalization(df, norm_parameters):
     """Renormalizer.
-    
-  Args:
-    - df: input data
-    - norm_parameters: parameters for renomalization
-    
-  Returns:
-    - df: renormalized data
-  """
+
+    Args:
+        - df: input data
+        - norm_parameters: parameters for renomalization
+
+    Returns:
+        - df: renormalized data
+    """
     subtract_val = norm_parameters["subtract_val"]
     division_val = norm_parameters["division_val"]
 

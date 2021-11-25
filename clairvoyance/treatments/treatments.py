@@ -7,15 +7,15 @@ from treatments import CRN_Model, RMSN_Model
 
 def treatment_effects_model(model_name, model_parameters, task):
     """Determine ITE model.
-  
-  Args:
-    - model_name: 'CRN', 'RMSN'
-    - model_parameters: parameters of the models
-    - task: 'classification' or 'regression':
-      
-  Returns:
-    - treatment_model: ITE model
-  """
+
+    Args:
+        - model_name: 'CRN', 'RMSN'
+        - model_parameters: parameters of the models
+        - task: 'classification' or 'regression':
+
+    Returns:
+        - treatment_model: ITE model
+    """
     assert model_name in ["CRN", "RMSN"]
 
     if model_name == "CRN":

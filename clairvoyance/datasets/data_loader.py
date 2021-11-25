@@ -2,12 +2,12 @@
 
 - Missing data is represented as blank (or NaN)
 - Consist of two components:
-  (1) temporal data
-  (2) static data
-  
+    (1) temporal data
+    (2) static data
+
 - Following columns are necessary: id, time
-  (1) id: patient id to connect between temporal data and static data
-  (2) time: measurement time (only in the temporal data)
+    (1) id: patient id to connect between temporal data and static data
+    (2) time: measurement time (only in the temporal data)
 """
 
 # Necessary packages
@@ -19,11 +19,11 @@ from .dataset import PandasDataset
 
 class CSVLoader(BaseEstimator, DataLoaderMixin):
     """Load datasets from csv files.
-  
-  Attributes:
-    - static_file: file name of static data
-    - temporal_file: file name of temporal data
-  """
+
+    Attributes:
+        - static_file: file name of static data
+        - temporal_file: file name of temporal data
+    """
 
     def __init__(self, static_file=None, temporal_file=None):
         self.static_file = static_file
@@ -31,14 +31,14 @@ class CSVLoader(BaseEstimator, DataLoaderMixin):
 
     def load(self):
         """Return both temporal and static datasets in PandasDataset format.
-    """
+        """
         s = self._load_static()
         x = self._load_temporal()
         return PandasDataset(s, x)
 
     def _load_static(self):
         """Load static data from csv file (static_file).
-    """
+        """
         if self.static_file is not None:
             try:
                 return pd.read_csv(self.static_file, delimiter=",")
@@ -50,9 +50,9 @@ class CSVLoader(BaseEstimator, DataLoaderMixin):
 
     def _load_temporal(self):
         """Load temporal data from csv file (temporal file).
-    
-    Convert EAV format to WIDE format.
-    """
+
+        Convert EAV format to WIDE format.
+        """
         if self.temporal_file is not None:
             try:
                 temporal_data = pd.read_csv(self.temporal_file, delimiter=",")
@@ -66,13 +66,13 @@ class CSVLoader(BaseEstimator, DataLoaderMixin):
 
 def eav_to_wide(df):
     """Transform EAV format to WIDE format.
-  
-  Args:
-    - df: EAV format dataframe
-    
-  Returns:
-    - df_wide: WIDE format dataframe.  
-  """
+
+    Args:
+        - df: EAV format dataframe
+
+    Returns:
+        - df_wide: WIDE format dataframe.
+    """
     # Original data needs the following four column name in order.
     col_names = list(df.columns)
     assert col_names[0] == "id"

@@ -15,10 +15,10 @@ from sklearn.model_selection import KFold
 class PandasDataset:
     """Define Pandas Dataset class for mixed type data (static + temporal).
 
-  Attributes:
-    - static_data: raw static data set.
-    - temporal_data: raw temporal data set.
-  """
+    Attributes:
+        - static_data: raw static data set.
+        - temporal_data: raw temporal data set.
+    """
 
     def __init__(self, static_data, temporal_data):
         self.static_data = static_data
@@ -41,17 +41,17 @@ class PandasDataset:
         self, temporal_feature, static_feature, label, treatment, time, feature_name, problem, label_name
     ):
         """Define temporal, static, label, treatment, and time.
-    
-    Args:
-      - temporal_feature: time-series features
-      - static_feature: non time-series features
-      - label: end-point to be predicted
-      - treatment: possible treatment
-      - time: measurement time
-      - feature_name: the column names of the temporal and static features
-      - problem: one-shot or online
-      - label_name: the column name of label
-    """
+
+        Args:
+            - temporal_feature: time-series features
+            - static_feature: non time-series features
+            - label: end-point to be predicted
+            - treatment: possible treatment
+            - time: measurement time
+            - feature_name: the column names of the temporal and static features
+            - problem: one-shot or online
+            - label_name: the column name of label
+        """
         self.is_feature_defined = True
         self.temporal_feature = temporal_feature
         self.static_feature = static_feature
@@ -65,12 +65,12 @@ class PandasDataset:
 
     def train_val_test_split(self, prob_val, prob_test, seed=666):
         """Split the data into train, valid, and test sets.
-    
-    Args:
-      - prob_val: the ratio of validation dataset
-      - prob_test: the ratio of testing dataset
-      - seed: random seed
-    """
+
+        Args:
+            - prob_val: the ratio of validation dataset
+            - prob_test: the ratio of testing dataset
+            - seed: random seed
+        """
         # Feature should be defined before dividing train/valid/test datasets
         assert self.is_feature_defined
         np.random.seed(seed)
@@ -92,12 +92,12 @@ class PandasDataset:
 
     def cv_split(self, n_fold=5, prob_val=0.2, seed=666):
         """Split the data into train, valid, and test sets for cross validation.
-    
-    Args:
-      - n_fold: the number of fold for cross validation
-      - prob_val: the ratio of validation dataset
-      - seed: random seed
-    """
+
+        Args:
+            - n_fold: the number of fold for cross validation
+            - prob_val: the ratio of validation dataset
+            - seed: random seed
+        """
         # Feature should be defined before dividing train/valid/test datasets
         assert self.is_feature_defined
 
@@ -122,18 +122,18 @@ class PandasDataset:
 
     def get_fold(self, fold, split):
         """Get the dataset for a certain fold.
-    
-    Args:
-      - fold: fold index
-      - split: split setting (should be among 'train', 'val', 'test', 'all')
-      
-    Returns:
-      - x: temporal features
-      - s: static features
-      - lab: labels
-      - t: time
-      - treat: treatments
-    """
+
+        Args:
+            - fold: fold index
+            - split: split setting (should be among 'train', 'val', 'test', 'all')
+
+        Returns:
+            - x: temporal features
+            - s: static features
+            - lab: labels
+            - t: time
+            - treat: treatments
+        """
         if not self.is_validation_defined:
             return self.temporal_feature, self.static_feature, self.label, self.time, self.treatment
         else:
