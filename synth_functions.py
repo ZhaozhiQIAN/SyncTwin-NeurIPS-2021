@@ -45,7 +45,8 @@ def threshold_test(X, mu=1):
 
     # re-transform matrix
     if transform_:
-        M_hat = inverse_transform(M_hat, a, b)
+        raise NotImplementedError()
+        # M_hat = inverse_transform(M_hat, a, b)
 
     # convert matrix back to original dimensions
     if transpose:
@@ -118,7 +119,8 @@ def threshold(X, num_sv=1):
 
     # re-transform matrix
     if transform_:
-        M_hat = inverse_transform(M_hat, a, b)
+        raise NotImplementedError()
+        # M_hat = inverse_transform(M_hat, a, b)
 
     # convert matrix back to original dimensions
     if transpose:
