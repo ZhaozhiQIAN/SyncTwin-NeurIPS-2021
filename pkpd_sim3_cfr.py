@@ -6,6 +6,7 @@ import torch
 
 import CFR
 import SyncTwin
+
 # from config import DEVICE
 from util import io_utils, train_utils
 

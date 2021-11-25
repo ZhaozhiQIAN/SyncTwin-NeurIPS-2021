@@ -7,7 +7,6 @@ https://github.com/SucreRouge/synth_control
 
 from __future__ import division
 
-
 import numpy as np
 from numpy.linalg import inv, norm
 from sklearn import linear_model

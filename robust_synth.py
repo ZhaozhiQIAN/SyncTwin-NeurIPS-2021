@@ -11,7 +11,7 @@ from __future__ import division
 import matplotlib.pyplot as plt
 import numpy as np
 
-from synth_functions import swap, learn
+from synth_functions import learn, swap
 
 
 class Synth:
