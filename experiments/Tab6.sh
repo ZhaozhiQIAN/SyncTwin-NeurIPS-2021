@@ -1,5 +1,11 @@
 # the first script to run
 
+cd "$(dirname "$0")/.."  # cd to repo root.
+mkdir -p models
+mkdir -p results
+
+
+
 bash run_one_sim.sh sync1 25 30 200 200 1
 bash run_one_sim.sh sync2 15 20 200 200 1
 bash run_one_sim.sh sync3 45 50 200 200 1

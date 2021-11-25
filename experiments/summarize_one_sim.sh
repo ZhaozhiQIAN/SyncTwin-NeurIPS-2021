@@ -1,3 +1,9 @@
+cd "$(dirname "$0")/.."  # cd to repo root.
+mkdir -p models
+mkdir -p results
+
+
+
 sim_id=$1
 out_id=""
 
@@ -56,11 +62,11 @@ elif [[ ${sim_id} == "sync1-p50-h2" ]]
 then
     out_id=Fig3_C3
 else
-echo "Setting ${sim_id} is not Found"
+    echo "Setting ${sim_id} is not Found"
 fi
 
 
-python -u synth_eval.py --sim_id=${sim_id} --seed=100 > models/${sim_id}-sc-sum.txt
+python -u -m experiments.synth_eval --sim_id=${sim_id} --seed=100 > models/${sim_id}-sc-sum.txt
 
 rm -f results/${out_id}_MAE.txt
 touch results/${out_id}_MAE.txt
@@ -108,4 +114,3 @@ echo 1NN >> results/${out_id}_MAE.txt
 grep -E "MAE" models/${sim_id}-sc-sum.txt  | tail -n 1 >> results/${out_id}_MAE.txt
 
 cat results/${out_id}_MAE.txt
-
