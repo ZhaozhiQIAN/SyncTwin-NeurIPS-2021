@@ -1,5 +1,5 @@
 [MASTER]
-init-hook='import sys; sys.path.append("./clairvoyance")'
+init-hook='import sys; sys.path.extend(["./", "./clairvoyance"])'
 
 [MESSAGES CONTROL]
 disable=R,C,
