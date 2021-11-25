@@ -20,14 +20,14 @@ python -u -m experiments.pkpd_sim3_irregular_generation --sim_id=sync6d --seed=1
 
 # run benchmarks
 
-bash run_one_sim_irregular.sh sync1-miss-0.3 1
-bash run_one_sim_irregular.sh sync1-miss-0.5 1
-bash run_one_sim_irregular.sh sync1-miss-0.7 1
+bash experiments/run_one_sim_irregular.sh sync1-miss-0.3 1
+bash experiments/run_one_sim_irregular.sh sync1-miss-0.5 1
+bash experiments/run_one_sim_irregular.sh sync1-miss-0.7 1
 
 
-bash run_one_sim_irregular.sh sync6d-miss-0.3 1.5
-bash run_one_sim_irregular.sh sync6d-miss-0.5 1.5
-bash run_one_sim_irregular.sh sync6d-miss-0.7 1.5
+bash experiments/run_one_sim_irregular.sh sync6d-miss-0.3 1.5
+bash experiments/run_one_sim_irregular.sh sync6d-miss-0.5 1.5
+bash experiments/run_one_sim_irregular.sh sync6d-miss-0.7 1.5
 
 # ablate reconstruction loss
 
@@ -43,10 +43,10 @@ done
 
 # summarize results
 
-bash summarize_one_sim.sh sync1-miss-0.3
-bash summarize_one_sim.sh sync1-miss-0.5
-bash summarize_one_sim.sh sync1-miss-0.7
+bash experiments/summarize_one_sim.sh sync1-miss-0.3
+bash experiments/summarize_one_sim.sh sync1-miss-0.5
+bash experiments/summarize_one_sim.sh sync1-miss-0.7
 
-bash summarize_one_sim.sh sync6d-miss-0.3
-bash summarize_one_sim.sh sync6d-miss-0.5
-bash summarize_one_sim.sh sync6d-miss-0.7
+bash experiments/summarize_one_sim.sh sync6d-miss-0.3
+bash experiments/summarize_one_sim.sh sync6d-miss-0.5
+bash experiments/summarize_one_sim.sh sync6d-miss-0.7
