@@ -1,6 +1,7 @@
 cd "$(dirname "$0")/.."  # cd to repo root.
 mkdir -p models
 mkdir -p results
+set +x
 
 
 
@@ -66,7 +67,9 @@ else
 fi
 
 
+set -x
 python -u -m experiments.synth_eval --sim_id=${sim_id} --seed=100 > models/${sim_id}-sc-sum.txt
+set +x
 
 rm -f results/${out_id}_MAE.txt
 touch results/${out_id}_MAE.txt

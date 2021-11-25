@@ -3,6 +3,7 @@
 cd "$(dirname "$0")/.."  # cd to repo root.
 mkdir -p models
 mkdir -p results
+set +x
 
 
 

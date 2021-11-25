@@ -3,6 +3,7 @@
 cd "$(dirname "$0")/.."  # cd to repo root.
 mkdir -p models
 mkdir -p results
+set +x
 
 
 
@@ -21,6 +22,8 @@ echo ${control_sample}
 echo ${treatment_sample}
 echo ${tau}
 
+
+set -x
 python -u -m experiments.pkpd_sim3_data_generation --sim_id=${sim_id} --train_step=${train_step} --step=${step} --control_sample=${control_sample} --treatment_sample=${treatment_sample} --seed=100
 
 python -u -m experiments.pkpd_sim3_model_training --sim_id=${sim_id} --seed=100 --model_id=-prognostic-linear --reduced_fine_tune=True --tau=${tau} --lam_prognostic=1 --pretrain_Y=True --itr=10 --linear_decoder=True  > models/${sim_id}-prognostic_linear.txt
@@ -38,3 +41,4 @@ python -u -m experiments.gp_benchmark --sim_id=${sim_id}  > models/${sim_id}-gp.
 
 # This takes a long time
 python -u -m experiments.pkpd_rsc --sim_id=${sim_id} --seed=100 > models/${sim_id}-rsc.txt
+set +x
