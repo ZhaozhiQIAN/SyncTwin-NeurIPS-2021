@@ -128,7 +128,7 @@ def rnn_fit(hyperparams_encoder_iptw, dataset_train, dataset_val, networks_to_tr
 
             training_processed["propensity_weights"] = propensity_weights
 
-        # Start hyperparamter optimisation
+        # Start hyperparameter optimisation
         hyperparam_count = 0
         while True:
 

@@ -16,6 +16,10 @@ import pandas as pd
 import tensorflow as tf
 from tensorflow.python.tools.inspect_checkpoint import print_tensors_in_checkpoint_file
 
+"""
+General
+"""
+
 
 def create_folder_if_not_exist(directory):
     if not os.path.exists(directory):
@@ -140,7 +144,7 @@ def randomise_minibatch_index(num_patients, minibatch_size):
     return tmp
 
 
-""" 
+"""
 Serialisation
 """
 

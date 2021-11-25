@@ -93,7 +93,7 @@ class RMSN_Model(BaseEstimator, PredictorMixin):
         Args:
             - dataset: temporal, static, label, time, treatment information
             - patient_id: patient id of patient for which the counterfactuals are computed
-            - timestep: timestept in the patient trajectory where counterfactuals are predicted
+            - timestep: timestep in the patient trajectory where counterfactuals are predicted
             - treatment_options: treatment options for computing the counterfactual trajectories
             - fold: test fold
             - test_split: testing set splitting parameter
@@ -211,7 +211,7 @@ class RMSN_Model(BaseEstimator, PredictorMixin):
         Args:
             - dataset: dataset with test patients
             - patient_id: patient id of patient for which the counterfactuals are computed
-            - timestep: timestept in the patient trajectory where counterfactuals are predicted
+            - timestep: timestep in the patient trajectory where counterfactuals are predicted
             - treatment_options: treatment options for computing the counterfactual trajectories; the length of the
                 sequence of treatment options needs to be projection_horizon + 1 where projection_horizon is the number of
                 future timesteps used for training decoder model.

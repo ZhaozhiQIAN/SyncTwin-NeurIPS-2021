@@ -122,7 +122,7 @@ def data_division_module(x, s, preprocess_parameters):
     time = x[["id", "time"]]
     x = x.drop(["time"], axis=1)
 
-    # 3. Treatmnet define
+    # 3. Treatment define
     if treatment_features == "None":
         treatment = np.zeros([0])
     else:

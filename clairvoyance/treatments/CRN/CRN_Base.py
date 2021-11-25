@@ -18,7 +18,7 @@ class CRN_Base:
 
         Args:
             - hyperparams: dictionary with the hyperparameters specifying the architecture of the CRN encoder or decoder model.
-            - params: dictionary of parameters specifying the following dimensions needed for initilizing the placeholder
+            - params: dictionary of parameters specifying the following dimensions needed for initializing the placeholder
                 values of the TensorFlow graph: num_treatments (number of treatments), num_covariates (number of covariates),
                 num_outputs (number of outputs) and max_sequence_length.
             - b_train_decoder: boolean value indicating whether to train decoder model.

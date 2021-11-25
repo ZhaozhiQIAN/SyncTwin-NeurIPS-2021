@@ -139,7 +139,7 @@ def decoder_fit(hyperparams_decoder_iptw, training_dataset, validation_dataset, 
     logging.info("Running hyperparameter optimisation")
 
     # Optimal encoder to load for decoder training
-    # - This allows for states from the encoder to be dumped, and decoder is intialised with them
+    # - This allows for states from the encoder to be dumped, and decoder is initialised with them
     encoder_specifications = {
         "rnn_propensity_weighted": treatments.RMSN.configs.load_optimal_parameters(
             "rnn_propensity_weighted", expt_name, MODEL_ROOT
@@ -235,7 +235,7 @@ def decoder_fit(hyperparams_decoder_iptw, training_dataset, validation_dataset, 
 
             training_processed["propensity_weights"] = propensity_weights
 
-        # In[*]: Get intitial states & transform data maps
+        # In[*]: Get initial states & transform data maps
 
         logging.info("Loading basic network to generate states: {}".format(net_name))
 

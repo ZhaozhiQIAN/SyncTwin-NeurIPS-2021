@@ -108,7 +108,7 @@ class CRN_Model(BaseEstimator, PredictorMixin):
         Args:
             - dataset: dataset with test patients
             - patient_id: patient id of patient for which the counterfactuals are computed
-            - timestep: timestept in the patient trajectory where counterfactuals are predicted
+            - timestep: timestep in the patient trajectory where counterfactuals are predicted
             - treatment_options: treatment options for computing the counterfactual trajectories; the length of the
                 sequence of treatment options needs to be projection_horizon + 1 where projection_horizon is the number of
                 future timesteps used for training decoder model.
@@ -163,7 +163,7 @@ class CRN_Model(BaseEstimator, PredictorMixin):
 
         Args:
             - model_path:  dictionary containing model_dir (directory where to save the model) and model_name for the
-                        the saved encoder and deocder models
+                        the saved encoder and decoder models
         """
         encoder_params = pickle.load(open(os.path.join(model_dir, "encoder_params_" + model_name + ".pkl"), "rb"))
         encoder_hyperparams = pickle.load(
