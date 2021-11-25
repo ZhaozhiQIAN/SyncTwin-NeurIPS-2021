@@ -46,7 +46,7 @@ def pre_train_reconstruction_loss(
         optimizer.zero_grad()
 
         if batch_size is not None:
-            x, t, mask = batching.get_batch_standard(batch_size, x_full, t_full, mask_full)
+            x, t, mask = batching.get_batch_standard(batch_size, x_full, t_full, mask_full)  # pylint: disable=unbalanced-tuple-unpacking
         else:
             x, t, mask = x_full, t_full, mask_full
 
@@ -114,7 +114,7 @@ def pre_train_reconstruction_prognostic_loss(
         optimizer.zero_grad()
 
         if batch_size is not None:
-            x, t, mask, y, y_mask = batching.get_batch_standard(
+            x, t, mask, y, y_mask = batching.get_batch_standard(  # pylint: disable=unbalanced-tuple-unpacking
                 batch_size, x_full, t_full, mask_full, y_full, y_mask_full
             )
         else:
@@ -147,7 +147,7 @@ def pre_train_reconstruction_prognostic_loss(
                     n_fold = x_full_val.shape[1] // 500
 
                     for fold in range(n_fold):
-                        x_full_vb, t_full_vb, mask_full_vb, y_full_vb, y_mask_full_vb = batching.get_folds(
+                        x_full_vb, t_full_vb, mask_full_vb, y_full_vb, y_mask_full_vb = batching.get_folds(  # pylint: disable=unbalanced-tuple-unpacking
                             fold, n_fold, x_full_val, t_full_val, mask_full_val, y_full_val, y_mask_full_val
                         )
 

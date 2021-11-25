@@ -76,9 +76,9 @@ def normalization_module(x, s):
     temporal_col_names = x.drop(["id", "time"], axis=1).columns.values
     static_col_names = s.drop(["id"], axis=1).columns.values
 
-    x[temporal_col_names], temporal_norm_parameters = normalization(x[temporal_col_names])
+    x[temporal_col_names], temporal_norm_parameters = normalization(x[temporal_col_names])  # pylint: disable=no-value-for-parameter
 
-    s[static_col_names], static_norm_parameters = normalization(s[static_col_names])
+    s[static_col_names], static_norm_parameters = normalization(s[static_col_names])  # pylint: disable=no-value-for-parameter
 
     norm_parameters = {
         "temporal_max_val": temporal_norm_parameters["max_val"],
@@ -210,7 +210,7 @@ def data_preprocess(train_x, train_s, test_x, test_s, preprocess_parameters):
     test_x, test_s = one_hot_encoding_module(test_x, test_s, one_hot_encoding_features)
 
     # 2. Normalize the features
-    normalization = preprocess_parameters["normalization"]
+    normalization = preprocess_parameters["normalization"]  # pylint: disable=redefined-outer-name
 
     if normalization:
         train_x, train_s, normalization_parameters = normalization_module(train_x, train_s)

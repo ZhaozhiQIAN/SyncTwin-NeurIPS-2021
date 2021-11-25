@@ -27,7 +27,7 @@ def solve(init, Kin, K, Os, H, D50, step=30):
 
     try:
         len(Kin)
-    except Exception:
+    except Exception:  # pylint: disable=broad-except
         Kin = np.ones(step + 1) * Kin
 
     ode.set_initial_value(init, 0).set_f_params(Kin, K, Ot, H, D50)

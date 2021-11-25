@@ -109,28 +109,28 @@ class GRUD(nn.Module):
         dim_size = x.shape[1]
 
         delta_x = torch.exp(-torch.max(self.zeros, self.gamma_x_l(delta)))
-        delta_h = torch.exp(-torch.max(self.zeros_hidden, self.gamma_h_l(delta)))
+        delta_h = torch.exp(-torch.max(self.zeros_hidden, self.gamma_h_l(delta)))  # pylint: disable=not-callable
 
-        #         print('mask', mask.shape)
-        #         print('x', x.shape)
-        #         print('delta_x', delta_x.shape)
-        #         print('x_last_obsv', x_last_obsv.shape)
+        # print('mask', mask.shape)
+        # print('x', x.shape)
+        # print('delta_x', delta_x.shape)
+        # print('x_last_obsv', x_last_obsv.shape)
 
         x = mask * x + (1 - mask) * (delta_x * x_last_obsv)
-        #         print('h', h.shape)
-        #         print('delta_h', delta_h.shape)
+        # print('h', h.shape)
+        # print('delta_h', delta_h.shape)
         h = delta_h * h
 
         combined = torch.cat((x, h, mask), 1)
-        z = torch.sigmoid(self.zl(combined))
-        r = torch.sigmoid(self.rl(combined))
+        z = torch.sigmoid(self.zl(combined))  # pylint: disable=not-callable
+        r = torch.sigmoid(self.rl(combined))  # pylint: disable=not-callable
         combined_r = torch.cat((x, r * h, mask), 1)
-        h_tilde = torch.tanh(self.hl(combined_r))
+        h_tilde = torch.tanh(self.hl(combined_r))  # pylint: disable=not-callable
         h = (1 - z) * h + z * h_tilde
 
         return h
 
-    def forward(self, input):
+    def forward(self, input):  # pylint: disable=redefined-builtin
         batch_size = input.size(0)
         type_size = input.size(1)
         step_size = input.size(2)

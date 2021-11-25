@@ -86,7 +86,7 @@ def remove_negative_value(df):
     Returns:
         - df: data without negative value.
     """
-    num = df._get_numeric_data()
+    num = df._get_numeric_data()  # pylint: disable=protected-access
     num[num < 0] = np.nan
     return df
 

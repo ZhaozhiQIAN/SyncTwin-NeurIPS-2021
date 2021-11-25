@@ -179,11 +179,11 @@ def rnn_fit(hyperparams_encoder_iptw, dataset_train, dataset_val, networks_to_tr
             hyperparam_count = len(hyperparam_opt.columns)
 
             if hyperparam_count == max_hyperparam_runs:
-                opt_params[net_name] = hyperparam_opt.T
+                opt_params[net_name] = hyperparam_opt.T  # pylint: disable=no-member
                 break
 
         logging.info("Done")
-        logging.info(hyperparam_opt.T)
+        logging.info(hyperparam_opt.T)  # pylint: disable=no-member
 
         # Flag optimal params
     logging.info(opt_params)

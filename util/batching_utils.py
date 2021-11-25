@@ -33,7 +33,7 @@ def get_batch_standard(batch_size, *args):
     return mini_batch
 
 
-def get_folds(start=0, split=1, *args):
+def get_folds(start, split, *args):
     a = args
     ret = []
 

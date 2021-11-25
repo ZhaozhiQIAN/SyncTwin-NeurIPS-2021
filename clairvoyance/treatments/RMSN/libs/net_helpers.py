@@ -14,7 +14,7 @@ import os
 import numpy as np
 import pandas as pd
 import tensorflow as tf
-from tensorflow.python.tools.inspect_checkpoint import print_tensors_in_checkpoint_file  # type: ignore
+from tensorflow.python.tools.inspect_checkpoint import print_tensors_in_checkpoint_file  # type: ignore  # pylint: disable=import-error
 
 """
 General
@@ -78,7 +78,7 @@ def get_optimization_graph(
     grads = tf.gradients(loss, trainables)
     grads, _ = tf.clip_by_global_norm(grads, clip_norm=max_global_norm)
     grad_var_pairs = zip(grads, trainables)
-    global_step = global_step
+    global_step = global_step  # pylint: disable=self-assigning-variable
 
     minimize = optimizer.apply_gradients(grad_var_pairs, global_step=global_step)
 
@@ -152,7 +152,7 @@ Serialisation
 def save_network(tf_session, model_folder, cp_name, optimisation_summary):
     # Save model
     saver = tf.train.Saver(max_to_keep=100000)
-    vars = 0
+    vars = 0  # pylint: disable=redefined-builtin
     for v in tf.global_variables():
         vars += np.prod(v.get_shape().as_list())
 

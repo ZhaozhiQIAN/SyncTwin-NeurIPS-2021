@@ -5,7 +5,7 @@ import os
 
 import numpy as np
 import tensorflow as tf
-from tensorflow.contrib.rnn import DropoutWrapper, LSTMCell  # type: ignore
+from tensorflow.contrib.rnn import DropoutWrapper, LSTMCell  # type: ignore  # pylint: disable=import-error
 from tensorflow.python.ops import rnn  # type: ignore
 from treatments.CRN.flip_gradient import flip_gradient
 

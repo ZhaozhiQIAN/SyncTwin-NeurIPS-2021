@@ -15,7 +15,9 @@ from synth_functions import learn, swap
 
 
 class Synth:
-    def __init__(self, treat_unit, year, prior_param=0.5, method="linear", p=1, num_sv=1, drop=False, drop_list=[]):
+    def __init__(self, treat_unit, year, prior_param=0.5, method="linear", p=1, num_sv=1, drop=False, drop_list=None):
+        if drop_list is None:
+            drop_list = []
         self.treat_unit = treat_unit
         self.year = year
         self.p = p

@@ -32,25 +32,25 @@ class CFR(nn.Module):
 
     def get_representation(self, x, t, mask):
         # get representation C: B(atch size), D(im hidden)
-        x, t, mask = self.check_device(x, t, mask)
+        x, t, mask = self.check_device(x, t, mask)  # pylint: disable=unbalanced-tuple-unpacking
         C = self.encoder(x, t, mask)
         return C
 
     def get_prognostics(self, C, t, mask):
-        C, t, mask = self.check_device(C, t, mask)
+        C, t, mask = self.check_device(C, t, mask)  # pylint: disable=unbalanced-tuple-unpacking
         y_hat = self.decoder_Y(C, t, mask)
         return y_hat
 
     def prognostic_loss(self, y, y_hat, mask=None):
         if mask is None:
             mask = torch.ones_like(y)
-        y, y_hat, mask = self.check_device(y, y_hat, mask)
+        y, y_hat, mask = self.check_device(y, y_hat, mask)  # pylint: disable=unbalanced-tuple-unpacking
         err = (y - y_hat) * mask
         err_mse = torch.sum(err ** 2) / torch.sum(mask)
         return err_mse
 
     def forward(self, x, t, mask, y, y_mask):
-        x, t, mask, y, y_mask = self.check_device(x, t, mask, y, y_mask)
+        x, t, mask, y, y_mask = self.check_device(x, t, mask, y, y_mask)  # pylint: disable=unbalanced-tuple-unpacking
         C = self.get_representation(x, t, mask)
         y_hat = self.get_prognostics(C, t, y_mask)
 
@@ -67,7 +67,7 @@ class CFR(nn.Module):
         return p_loss
 
     def get_treatment_effect(self, x, t, mask, y, y_mask):
-        x, t, mask, y, y_mask = self.check_device(x, t, mask, y, y_mask)
+        x, t, mask, y, y_mask = self.check_device(x, t, mask, y, y_mask)  # pylint: disable=unbalanced-tuple-unpacking
         C = self.get_representation(x, t, mask)
         y_hat = self.get_prognostics(C, t, y_mask)
         y_hat = y_hat[:, self.n_unit :, :]

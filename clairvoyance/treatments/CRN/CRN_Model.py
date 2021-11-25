@@ -13,7 +13,7 @@ from treatments.CRN.data_utils import (
 )
 
 
-class CRN_Model(BaseEstimator, PredictorMixin):
+class CRN_Model(BaseEstimator, PredictorMixin):  # pylint: disable=abstract-method
     def __init__(self, hyperparams_encoder=None, hyperparams_decoder=None, task=None, static_mode=None, time_mode=None):
         """
         Initialize the Counterfactual Recurrent Network (CRN).
@@ -34,7 +34,7 @@ class CRN_Model(BaseEstimator, PredictorMixin):
         self.hyperparams_encoder = hyperparams_encoder
         self.hyperparams_decoder = hyperparams_decoder
 
-    def fit(self, dataset, projection_horizon=None, fold=0, train_split="train", val_split="val"):
+    def fit(self, dataset, projection_horizon=None, fold=0, train_split="train", val_split="val"):  # pylint: disable=arguments-differ
         """Fit the treatment effects encoder model model.
 
         Args:
@@ -85,7 +85,7 @@ class CRN_Model(BaseEstimator, PredictorMixin):
             )
             self.decoder_model.train(training_seq_processed, validation_seq_processed)
 
-    def predict(self, dataset, fold=0, test_split="test"):
+    def predict(self, dataset, fold=0, test_split="test"):  # pylint: disable=arguments-differ
         """Return the one-step-ahead predicted outcomes on the test set. These are one-step-ahead predictions.
 
         Args:
@@ -136,7 +136,7 @@ class CRN_Model(BaseEstimator, PredictorMixin):
 
         return history, counterfactual_trajectories
 
-    def save_model(self, model_dir, model_name):
+    def save_model(self, model_dir, model_name):  # pylint: disable=arguments-differ
         """Save the model to model_dir using the model_name.
 
         Args:
@@ -157,7 +157,7 @@ class CRN_Model(BaseEstimator, PredictorMixin):
             self.hyperparams_decoder, open(os.path.join(model_dir, "hyperparams_decoder_" + model_name + ".pkl"), "wb")
         )
 
-    def load_model(self, model_dir, model_name):
+    def load_model(self, model_dir, model_name):  # pylint: disable=arguments-differ
         """
         Load and return the model from model_path
 

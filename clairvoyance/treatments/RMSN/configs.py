@@ -54,4 +54,4 @@ if __name__ == "__main__":
     expt_name = "treatment_effects"
     net_name = "treatment_rnn_action_inputs_only"
 
-    test = load_optimal_parameters(net_name, expt_name, select_max=True)
+    # test = load_optimal_parameters(net_name, expt_name, select_max=True)

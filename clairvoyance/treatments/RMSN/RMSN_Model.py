@@ -12,7 +12,7 @@ from treatments.RMSN.script_rnn_test import rnn_test
 from utils.data_utils import concate_xs, concate_xt
 
 
-class RMSN_Model(BaseEstimator, PredictorMixin):
+class RMSN_Model(BaseEstimator, PredictorMixin):  # pylint: disable=abstract-method
     def __init__(
         self,
         hyperparams_encoder_iptw=None,
@@ -156,7 +156,7 @@ class RMSN_Model(BaseEstimator, PredictorMixin):
 
         return patient_history, encoder_output, dataset_decoder
 
-    def fit(self, dataset, projection_horizon=None, fold=0, train_split="train", val_split="val"):
+    def fit(self, dataset, projection_horizon=None, fold=0, train_split="train", val_split="val"):  # pylint: disable=arguments-differ
         """Fit the treatment effects model model.
 
         Args:
@@ -239,7 +239,7 @@ class RMSN_Model(BaseEstimator, PredictorMixin):
 
         return history, counterfactual_trajectories
 
-    def predict(self, dataset, fold=0, test_split="test"):
+    def predict(self, dataset, fold=0, test_split="test"):  # pylint: disable=arguments-differ
         """Return the predicted factual outcomes on the test set. These are one-step-ahead predictions.
 
         Args:

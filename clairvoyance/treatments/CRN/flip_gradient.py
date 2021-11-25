@@ -5,7 +5,7 @@ CODE ADAPTED FROM https://github.com/pumpikano/tf-dann/blob/master/flip_gradient
 from __future__ import absolute_import, division, print_function
 
 import tensorflow as tf
-from tensorflow.python.framework import ops  # type: ignore
+from tensorflow.python.framework import ops  # type: ignore  # pylint: disable=import-error
 
 
 class FlipGradientBuilder(object):
