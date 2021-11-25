@@ -43,27 +43,27 @@ def linear(input_, output_size, scope=None, bias_start=0.0, with_w=False):
             return tf.matmul(input_, matrix) + bias
 
 
-def randomise_minibatch_index(Y, minibatch_size):
-    batch_num, target_num = Y.shape
+# def randomise_minibatch_index(Y, minibatch_size):
+#     batch_num, target_num = Y.shape
 
-    # Randomise rows
-    rdm_idx = [i for i in range(batch_num)]
-    np.random.shuffle(rdm_idx)
+#     # Randomise rows
+#     rdm_idx = [i for i in range(batch_num)]
+#     np.random.shuffle(rdm_idx)
 
-    max_idx = len(rdm_idx)
-    num_minibatches = int(max_idx / minibatch_size)
-    minibatch_numbers = [j for j in range(num_minibatches)]
+#     max_idx = len(rdm_idx)
+#     num_minibatches = int(max_idx / minibatch_size)
+#     minibatch_numbers = [j for j in range(num_minibatches)]
 
-    tmp = []
-    for count in range(len(minibatch_numbers)):
-        j = minibatch_numbers[count]
+#     tmp = []
+#     for count in range(len(minibatch_numbers)):
+#         j = minibatch_numbers[count]
 
-        ptr = j * minibatch_size
-        end_idx = min(minibatch_size + ptr, max_idx)
-        minibatch_idx = rdm_idx[ptr:end_idx]
+#         ptr = j * minibatch_size
+#         end_idx = min(minibatch_size + ptr, max_idx)
+#         minibatch_idx = rdm_idx[ptr:end_idx]
 
-        tmp.append(minibatch_idx)
-    return tmp
+#         tmp.append(minibatch_idx)
+#     return tmp
 
 
 def get_optimization_graph(

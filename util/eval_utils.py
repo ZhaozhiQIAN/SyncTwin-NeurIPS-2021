@@ -3,19 +3,19 @@ import numpy as np
 import torch
 
 
-def get_prediction(nsc, batch_ind_full, y_control, itr=500):
-    y_hat_list = list()
-    for i in range(itr):
-        with torch.no_grad():
-            B_reduced = nsc.get_B_reduced(batch_ind_full)
-            y_hat = torch.matmul(B_reduced, y_control)
-            if torch.sum(torch.isinf(y_hat)).item() == 0:
-                y_hat_list.append(y_hat)
+# def get_prediction(nsc, batch_ind_full, y_control, itr=500):
+#     y_hat_list = list()
+#     for i in range(itr):
+#         with torch.no_grad():
+#             B_reduced = nsc.get_B_reduced(batch_ind_full)
+#             y_hat = torch.matmul(B_reduced, y_control)
+#             if torch.sum(torch.isinf(y_hat)).item() == 0:
+#                 y_hat_list.append(y_hat)
 
-    y_hat_mat = torch.stack(y_hat_list, dim=-1)
-    y_hat_mat[torch.isinf(y_hat_mat)] = 0.0
-    y_hat2 = torch.mean(y_hat_mat, dim=-1)
-    return y_hat2
+#     y_hat_mat = torch.stack(y_hat_list, dim=-1)
+#     y_hat_mat[torch.isinf(y_hat_mat)] = 0.0
+#     y_hat2 = torch.mean(y_hat_mat, dim=-1)
+#     return y_hat2
 
 
 def get_prediction(nsc, batch_ind_full, y_control, itr=500):
