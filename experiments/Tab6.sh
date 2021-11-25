@@ -7,6 +7,7 @@ set +x
 
 
 
+set -x
 bash experiments/run_one_sim.sh sync1 25 30 200 200 1
 bash experiments/run_one_sim.sh sync2 15 20 200 200 1
 bash experiments/run_one_sim.sh sync3 45 50 200 200 1
@@ -22,6 +23,7 @@ bash experiments/summarize_one_sim.sh sync3
 bash experiments/summarize_one_sim.sh sync6d
 bash experiments/summarize_one_sim.sh sync7d
 bash experiments/summarize_one_sim.sh sync8d
+set +x
 
 cp Tab2_C3_MAE.txt Tab6_C2_MAE.txt
 cp Tab2_C6_MAE.txt Tab6_C5_MAE.txt
