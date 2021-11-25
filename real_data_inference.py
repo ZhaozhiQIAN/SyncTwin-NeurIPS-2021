@@ -1,8 +1,6 @@
 import argparse
-import time
 
 import numpy as np
-import numpy.random
 import pandas as pds
 import torch
 

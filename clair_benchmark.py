@@ -1,16 +1,16 @@
 import argparse
 import sys
 
-# sys.path.append('../time-series-automl')
-sys.path.append("clairvoyance")
 import numpy as np
 import pandas as pds
 import tensorflow as tf
-from datasets import dataset
-from preprocessing import ProblemMaker
-from treatments.treatments import treatment_effects_model
 
-from clair_helper import get_clair_data
+sys.path.append("clairvoyance")
+from datasets import dataset  # type: ignore  # noqa: E402
+from preprocessing import ProblemMaker  # type: ignore  # noqa: E402
+from treatments.treatments import treatment_effects_model  # type: ignore  # noqa: E402
+
+from clair_helper import get_clair_data  # noqa: E402
 
 parser = argparse.ArgumentParser("Clair Benchmark")
 parser.add_argument("--seed", type=str, default="100")

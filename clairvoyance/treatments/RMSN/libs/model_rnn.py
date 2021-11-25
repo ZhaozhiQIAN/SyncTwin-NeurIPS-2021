@@ -9,7 +9,6 @@ Created on 21/3/2018 4:33 PM
 """
 
 import numpy as np
-import pandas as pd
 import tensorflow as tf
 import treatments.RMSN.libs.net_helpers as helpers
 

@@ -1,5 +1,4 @@
 import argparse
-import pickle
 import time
 
 import numpy as np
@@ -7,8 +6,7 @@ import numpy.random
 import torch
 
 import SyncTwin
-from config import DEVICE
-from sim import pkpd
+# from config import DEVICE
 from util import eval_utils, io_utils, train_utils
 
 parser = argparse.ArgumentParser("PKPD simulation")

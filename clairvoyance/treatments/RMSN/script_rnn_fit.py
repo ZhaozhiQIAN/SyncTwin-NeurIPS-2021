@@ -5,7 +5,6 @@ CODE ADAPTED FROM: https://github.com/sjblim/rmsn_nips_2018
 [Treatment Effects with RNNs] core_routines
 """
 
-import argparse
 import logging
 import os
 

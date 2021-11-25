@@ -42,7 +42,7 @@ class CSVLoader(BaseEstimator, DataLoaderMixin):
         if self.static_file is not None:
             try:
                 return pd.read_csv(self.static_file, delimiter=",")
-            except:
+            except:  # noqa: E722
                 raise IOError("Static file (" + self.static_file + ") is not exist.")
 
         else:
@@ -56,7 +56,7 @@ class CSVLoader(BaseEstimator, DataLoaderMixin):
         if self.temporal_file is not None:
             try:
                 temporal_data = pd.read_csv(self.temporal_file, delimiter=",")
-            except:
+            except:  # noqa: E722
                 raise IOError("Temporal file (" + self.temporal_file + ") is not exist.")
             # Convert EAV format to WIDE format
             return eav_to_wide(temporal_data)

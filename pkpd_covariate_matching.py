@@ -6,7 +6,7 @@ import pandas as pds
 import torch
 
 import SyncTwin
-from util import eval_utils, io_utils, train_utils
+from util import io_utils, train_utils
 
 parser = argparse.ArgumentParser("PKPD simulation")
 parser.add_argument("--sim_id", type=str)

@@ -14,7 +14,7 @@ import os
 import numpy as np
 import pandas as pd
 import tensorflow as tf
-from tensorflow.python.tools.inspect_checkpoint import print_tensors_in_checkpoint_file
+from tensorflow.python.tools.inspect_checkpoint import print_tensors_in_checkpoint_file  # type: ignore
 
 """
 General
@@ -195,7 +195,7 @@ def add_hyperparameter_results(
 ):
     srs = optimisation_summary.copy()
 
-    if validation_loss_col != None:
+    if validation_loss_col != None:  # noqa: E711
         srs = srs[validation_loss_col]
 
     srs = srs.dropna()

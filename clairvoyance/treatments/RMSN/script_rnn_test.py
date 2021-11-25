@@ -7,17 +7,11 @@ CODE ADAPTED FROM: https://github.com/sjblim/rmsn_nips_2018
 import logging
 import os
 
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
 import tensorflow as tf
 import treatments.RMSN.configs as configs
 import treatments.RMSN.core_routines as core
-import treatments.RMSN.libs.net_helpers as helpers
-from sklearn.metrics import average_precision_score, roc_auc_score
 from treatments.RMSN.configs import load_optimal_parameters
 from treatments.RMSN.core_routines import test
-from treatments.RMSN.libs.model_rnn import RnnModel
 
 # import seaborn as sns
 # sns.set()

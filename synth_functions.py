@@ -7,13 +7,10 @@ https://github.com/SucreRouge/synth_control
 
 from __future__ import division
 
-import matplotlib.pyplot as plt
+
 import numpy as np
-from matplotlib import colors as mcolors
-from numpy.linalg import inv, norm, svd
-from scipy import stats
+from numpy.linalg import inv, norm
 from sklearn import linear_model
-from sklearn.model_selection import GridSearchCV, cross_val_score, train_test_split
 
 
 # singular value thresholding

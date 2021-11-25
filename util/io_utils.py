@@ -1,7 +1,6 @@
 import pickle
 
 import numpy as np
-import pandas as pds
 import torch
 
 

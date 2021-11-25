@@ -11,10 +11,8 @@ Created on 6/5/2018 11:22 AM
 import logging
 import os
 
-import numpy as np
 import pandas as pd
 import tensorflow as tf
-import treatments.RMSN.configs as configs
 from treatments.RMSN.configs import load_optimal_parameters
 from treatments.RMSN.core_routines import test
 

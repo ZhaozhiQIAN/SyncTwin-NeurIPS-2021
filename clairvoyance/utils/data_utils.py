@@ -88,7 +88,7 @@ def list_diff(list1, list2):
     """
     out = []
     for ele in list1:
-        if not ele in list2:
+        if not ele in list2:  # noqa: E713
             out.append(ele)
 
     return out

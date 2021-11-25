@@ -9,15 +9,12 @@ Common routines to use across all training scripts
 """
 
 import logging
-import os
-import pickle
 
 import numpy as np
 import pandas as pd
 import tensorflow as tf
 import treatments.RMSN.configs
 import treatments.RMSN.libs.net_helpers as helpers
-from sklearn.model_selection import KFold, ShuffleSplit
 from treatments.RMSN.libs.model_rnn import RnnModel
 
 ROOT_FOLDER = treatments.RMSN.configs.ROOT_FOLDER
@@ -25,6 +22,8 @@ MODEL_ROOT = treatments.RMSN.configs.MODEL_ROOT
 
 logger = logging.getLogger()
 logger.disabled = True
+
+
 # --------------------------------------------------------------------------
 # Training routine
 # --------------------------------------------------------------------------

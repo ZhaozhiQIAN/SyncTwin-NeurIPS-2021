@@ -6,8 +6,7 @@ import numpy.random
 import torch
 from sklearn.decomposition import PCA
 
-from config import DEVICE
-from sim import pkpd
+# from config import DEVICE
 from util import io_utils, train_utils
 
 parser = argparse.ArgumentParser("PKPD simulation")

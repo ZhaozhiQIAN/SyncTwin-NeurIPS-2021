@@ -2,10 +2,9 @@ import argparse
 
 import GPy
 import numpy as np
-import pandas as pd
 import torch
 
-from util import eval_utils, io_utils, train_utils
+from util import io_utils
 
 parser = argparse.ArgumentParser("CGP simulation")
 parser.add_argument("--seed", type=str, default="100")

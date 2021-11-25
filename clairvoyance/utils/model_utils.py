@@ -17,8 +17,8 @@ Others:
 
 # Necessary packages
 import tensorflow as tf
-from tensorflow.keras import layers
-from tensorflow.keras.layers import GRU, LSTM, SimpleRNN
+from tensorflow.keras import layers  # type: ignore
+from tensorflow.keras.layers import GRU, LSTM, SimpleRNN  # type: ignore
 
 
 def binary_cross_entropy_loss(y_true, y_pred):
@@ -125,7 +125,7 @@ def rnn_sequential(model, model_name, h_dim, return_seq, name=None):
     Returns:
         - model: sequential rnn model
     """
-    if name == None:
+    if name == None:  # noqa: E711
         if model_name == "rnn":
             model.add(layers.SimpleRNN(h_dim, return_sequences=return_seq))
         elif model_name == "lstm":

@@ -1,12 +1,11 @@
 import os
 
 import numpy as np
-import numpy.random
 import torch
 import torch.optim as optim
 
 import util.batching_utils as batching
-from config import DEVICE
+# from config import DEVICE
 
 
 def create_paths(*args):

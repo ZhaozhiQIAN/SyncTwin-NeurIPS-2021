@@ -1,16 +1,9 @@
-import argparse
-import pickle
-
-import matplotlib.pyplot as plt
 import numpy as np
-import numpy.random
 import pandas as pds
 import torch
 
-import SyncTwin
-from config import DEVICE
-from sim import pkpd
-from util import eval_utils, io_utils, train_utils
+# from config import DEVICE
+from util import io_utils
 
 
 def get_clair_data(seed, sim_id, fold):

@@ -6,7 +6,7 @@ import torch
 from config import DEVICE
 
 
-def f(t, y, Kin, K, O, H, D50):
+def f(t, y, Kin, K, O, H, D50):  # noqa: E741
     P = y[0]
     R = y[1]
     D = y[2]

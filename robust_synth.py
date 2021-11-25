@@ -10,9 +10,8 @@ from __future__ import division
 
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib import colors as mcolors
 
-from synth_functions import *
+from synth_functions import swap, learn
 
 
 class Synth:

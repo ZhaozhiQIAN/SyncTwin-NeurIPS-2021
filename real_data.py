@@ -3,12 +3,11 @@ import time
 
 import numpy as np
 import numpy.random
-import pandas as pds
 import torch
 
 import SyncTwin
 from config import DEVICE
-from util import eval_utils, io_utils, train_utils
+from util import io_utils, train_utils
 from util.batching_utils import get_splits
 
 parser = argparse.ArgumentParser("CPRD experiment")

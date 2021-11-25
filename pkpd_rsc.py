@@ -5,7 +5,7 @@ import pandas as pd
 import torch
 
 from robust_synth import Synth
-from util import eval_utils, io_utils, train_utils
+from util import io_utils
 
 
 def get_rsc_data(data_path, fold, return_y=False):
