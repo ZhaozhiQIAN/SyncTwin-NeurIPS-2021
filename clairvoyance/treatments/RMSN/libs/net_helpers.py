@@ -14,7 +14,9 @@ import os
 import numpy as np
 import pandas as pd
 import tensorflow as tf
-from tensorflow.python.tools.inspect_checkpoint import print_tensors_in_checkpoint_file  # type: ignore  # pylint: disable=import-error
+from tensorflow.python.tools.inspect_checkpoint import (  # type: ignore  # pylint: disable=import-error
+    print_tensors_in_checkpoint_file,
+)
 
 """
 General

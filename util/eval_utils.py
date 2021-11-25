@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 
-
 # def get_prediction(nsc, batch_ind_full, y_control, itr=500):
 #     y_hat_list = list()
 #     for i in range(itr):

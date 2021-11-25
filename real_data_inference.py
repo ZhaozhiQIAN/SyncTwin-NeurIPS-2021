@@ -111,7 +111,7 @@ for n in range(n_max + 1):
     print("Batch: ", str(n))
     res2 = get_split_inference(n0_val, n1_val, n_units_val, val_full, 1, n)
 
-    (
+    (  # pylint: disable=unbalanced-tuple-unpacking
         x_full_val0,
         t_full_val0,
         mask_full_val0,
@@ -121,7 +121,7 @@ for n in range(n_max + 1):
         y_mask_full_val0,
         patid_full_val0,
     ) = res
-    (
+    (  # pylint: disable=unbalanced-tuple-unpacking
         x_full_val1,
         t_full_val1,
         mask_full_val1,

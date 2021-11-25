@@ -76,9 +76,13 @@ def normalization_module(x, s):
     temporal_col_names = x.drop(["id", "time"], axis=1).columns.values
     static_col_names = s.drop(["id"], axis=1).columns.values
 
-    x[temporal_col_names], temporal_norm_parameters = normalization(x[temporal_col_names])  # pylint: disable=no-value-for-parameter
+    x[temporal_col_names], temporal_norm_parameters = normalization(  # pylint: disable=no-value-for-parameter
+        x[temporal_col_names]
+    )
 
-    s[static_col_names], static_norm_parameters = normalization(s[static_col_names])  # pylint: disable=no-value-for-parameter
+    s[static_col_names], static_norm_parameters = normalization(  # pylint: disable=no-value-for-parameter
+        s[static_col_names]
+    )
 
     norm_parameters = {
         "temporal_max_val": temporal_norm_parameters["max_val"],

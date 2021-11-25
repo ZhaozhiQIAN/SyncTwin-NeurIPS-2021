@@ -146,7 +146,9 @@ class SyncTwin(nn.Module):
         return err_mse * self.lam_recon
 
     def prognostic_loss(self, B_reduced, y_batch, y_control, y_mask):
-        B_reduced, y_batch, y_control, y_mask = self.check_device(B_reduced, y_batch, y_control, y_mask)  # pylint: disable=unbalanced-tuple-unpacking
+        B_reduced, y_batch, y_control, y_mask = self.check_device(  # pylint: disable=unbalanced-tuple-unpacking
+            B_reduced, y_batch, y_control, y_mask
+        )
         # y_batch: B, DY
         # y_mask: B (1 if control, 0 if treated)
         # y_all: N0, DY
@@ -162,9 +164,15 @@ class SyncTwin(nn.Module):
         return err_mse * self.lam_prognostic
 
     def forward(self, x, t, mask, batch_ind, y_batch, y_control, y_mask):
-        x, t, mask, batch_ind, y_batch, y_control, y_mask = self.check_device(  # pylint: disable=unbalanced-tuple-unpacking
-            x, t, mask, batch_ind, y_batch, y_control, y_mask
-        )
+        (  # pylint: disable=unbalanced-tuple-unpacking
+            x,
+            t,
+            mask,
+            batch_ind,
+            y_batch,
+            y_control,
+            y_mask,
+        ) = self.check_device(x, t, mask, batch_ind, y_batch, y_control, y_mask)
         C = self.get_representation(x, t, mask)
         x_hat = self.get_reconstruction(C, t, mask)
 

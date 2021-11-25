@@ -156,7 +156,9 @@ class RMSN_Model(BaseEstimator, PredictorMixin):  # pylint: disable=abstract-met
 
         return patient_history, encoder_output, dataset_decoder
 
-    def fit(self, dataset, projection_horizon=None, fold=0, train_split="train", val_split="val"):  # pylint: disable=arguments-differ
+    def fit(
+        self, dataset, projection_horizon=None, fold=0, train_split="train", val_split="val"
+    ):  # pylint: disable=arguments-differ
         """Fit the treatment effects model model.
 
         Args:

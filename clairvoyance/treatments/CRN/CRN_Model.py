@@ -34,7 +34,9 @@ class CRN_Model(BaseEstimator, PredictorMixin):  # pylint: disable=abstract-meth
         self.hyperparams_encoder = hyperparams_encoder
         self.hyperparams_decoder = hyperparams_decoder
 
-    def fit(self, dataset, projection_horizon=None, fold=0, train_split="train", val_split="val"):  # pylint: disable=arguments-differ
+    def fit(
+        self, dataset, projection_horizon=None, fold=0, train_split="train", val_split="val"
+    ):  # pylint: disable=arguments-differ
         """Fit the treatment effects encoder model model.
 
         Args:
