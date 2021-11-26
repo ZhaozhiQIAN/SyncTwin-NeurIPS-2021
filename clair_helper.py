@@ -1,5 +1,9 @@
+import logging
+import os
+
 import numpy as np
 import pandas as pds
+import tensorflow as tf
 import torch
 
 # from config import DEVICE
@@ -64,3 +68,23 @@ def get_clair_data(seed, sim_id, fold):
     projection_horizon = y_full.shape[0]
 
     return df, df_static, max_seq_len, projection_horizon, n_units, n_units_total, treatment_effect
+
+
+def tf_set_log_level(level: int) -> None:
+    if level >= logging.FATAL:
+        os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
+        tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.FATAL)
+    if level >= logging.ERROR:
+        os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
+        tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
+    if level >= logging.WARNING:
+        os.environ["TF_CPP_MIN_LOG_LEVEL"] = "1"
+        tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.INFO)
+    else:
+        os.environ["TF_CPP_MIN_LOG_LEVEL"] = "0"
+        tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.INFO)
+    logging.getLogger("tensorflow").setLevel(level)
+
+
+def silence_tf() -> None:
+    tf_set_log_level(logging.FATAL)

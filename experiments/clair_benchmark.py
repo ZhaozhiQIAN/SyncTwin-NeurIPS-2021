@@ -10,7 +10,9 @@ from datasets import dataset  # type: ignore  # noqa: E402
 from preprocessing import ProblemMaker  # type: ignore  # noqa: E402
 from treatments.treatments import treatment_effects_model  # type: ignore  # noqa: E402
 
-from clair_helper import get_clair_data  # noqa: E402
+from clair_helper import get_clair_data, silence_tf  # noqa: E402
+
+silence_tf()
 
 parser = argparse.ArgumentParser("Clair Benchmark")
 parser.add_argument("--seed", type=str, default="100")
