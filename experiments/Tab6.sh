@@ -25,5 +25,5 @@ bash experiments/summarize_one_sim.sh sync7d
 bash experiments/summarize_one_sim.sh sync8d
 set +x
 
-cp Tab2_C3_MAE.txt Tab6_C2_MAE.txt
-cp Tab2_C6_MAE.txt Tab6_C5_MAE.txt
+cp results/Tab2_C3_MAE.txt results/Tab6_C2_MAE.txt
+cp results/Tab2_C6_MAE.txt results/Tab6_C5_MAE.txt
