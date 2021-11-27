@@ -8,6 +8,6 @@ set +x
 
 
 set -x
-python -m interpretability --sim_id=sync1 > results/Tab7_C1.txt
-python -m interpretability --sim_id=sync6d > results/Tab7_C4.txt
+python -u -m experiments.interpretability --sim_id=sync1 > results/Tab7_C1.txt
+python -u -m experiments.interpretability --sim_id=sync6d > results/Tab7_C4.txt
 set +x
