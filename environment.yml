@@ -2,6 +2,7 @@ name: py37_synctwin
 channels:
   - powerai
   - pytorch
+  - conda-forge
   - defaults
 dependencies:
   - cudatoolkit=11.3.1
