@@ -1,15 +1,34 @@
+import math
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import math
-from config import DEVICE, D_TYPE
+
 import GRUD
+from config import D_TYPE, DEVICE
+
+WRAP_INDEX_ON = False  # To run old code set WRAP_INDEX_ON to True, otherwise keep this as False.
+
 
 # former NSC
 class SyncTwin(nn.Module):
-    def __init__(self, n_unit, n_treated, reg_B=0., lam_express=1., lam_recon=0., lam_prognostic=0., tau=1.,
-                 encoder=None, decoder=None, decoder_Y=None, device=DEVICE, dtype=D_TYPE, reduce_gpu_memory=False,
-                 inference_only=False):
+    def __init__(
+        self,
+        n_unit,
+        n_treated,
+        reg_B=0.0,
+        lam_express=1.0,
+        lam_recon=0.0,
+        lam_prognostic=0.0,
+        tau=1.0,
+        encoder=None,
+        decoder=None,
+        decoder_Y=None,
+        device=DEVICE,
+        dtype=D_TYPE,
+        reduce_gpu_memory=False,
+        inference_only=False,
+    ):
         super(SyncTwin, self).__init__()
         assert not (reduce_gpu_memory and inference_only)
 
@@ -48,19 +67,32 @@ class SyncTwin(nn.Module):
 
     def get_representation(self, x, t, mask):
         # get representation C: B(atch size), D(im hidden)
-        x, t, mask = self.check_device(x, t, mask)
+        x, t, mask = self.check_device(x, t, mask)  # pylint: disable=unbalanced-tuple-unpacking
         C = self.encoder(x, t, mask)
         return C
 
     def get_reconstruction(self, C, t, mask):
-        C, t, mask = self.check_device(C, t, mask)
+        C, t, mask = self.check_device(C, t, mask)  # pylint: disable=unbalanced-tuple-unpacking
         x_hat = self.decoder(C, t, mask)
         return x_hat
 
     def get_prognostics(self, C, t, mask):
-        C, t, mask = self.check_device(C, t, mask)
+        C, t, mask = self.check_device(C, t, mask)  # pylint: disable=unbalanced-tuple-unpacking
         y_hat = self.decoder_Y(C, t, mask)
         return y_hat
+
+    def _wrap_index(self, ind_0, ind_1, tensor):
+        assert ind_0.dim() == ind_1.dim() == 1
+        assert tensor.dim() == 2
+        if torch.any(ind_0 >= tensor.shape[0]).item() is True:
+            ind_0 = ind_0 % (tensor.shape[0] + 1)
+            selector = ind_0 < tensor.shape[0]
+            ind_0, ind_1 = ind_0[selector], ind_1[selector]
+        if torch.any(ind_1 >= tensor.shape[1]).item() is True:
+            ind_1 = ind_1 % (tensor.shape[1] + 1)
+            selector = ind_1 < tensor.shape[1]
+            ind_0, ind_1 = ind_0[selector], ind_1[selector]
+        return ind_0, ind_1
 
     def get_B_reduced(self, batch_ind):
         batch_ind = self.check_device(batch_ind)[0]
@@ -73,8 +105,18 @@ class SyncTwin(nn.Module):
         # mask = torch.zeros_like(B_reduced)
         # mask[torch.arange(batch_index.shape[0]), batch_index] = 1.
 
-        mask_inf = torch.zeros_like(B_reduced)
-        mask_inf[torch.arange(batch_ind.shape[0]), batch_ind] = torch.Tensor([float('-inf')])
+        if WRAP_INDEX_ON:
+            # Only enable this codepath to run old code (as at time of paper publication).
+            mask_inf = torch.zeros_like(B_reduced)
+            ind_0, ind_1 = torch.arange(batch_ind.shape[0]), batch_ind
+            ind_0, ind_1 = self._wrap_index(ind_0, ind_1, mask_inf)
+            mask_inf[ind_0, ind_1] = torch.Tensor([float("-inf")])
+        else:
+            # Keep WRAP_INDEX_ON = False to use this newer corrected code.
+            # *Model performance is unaffected by this fix.*
+            mask_inf = torch.zeros(len(batch_ind), len(batch_ind)).to(B_reduced)
+            mask_inf[batch_ind, batch_ind] = torch.Tensor([float("-inf")])
+            mask_inf = mask_inf[: B_reduced.shape[0], : B_reduced.shape[1]]
 
         B_reduced = B_reduced + mask_inf
         # softmax
@@ -84,14 +126,14 @@ class SyncTwin(nn.Module):
         return B_reduced
 
     def update_C0(self, C, batch_ind):
-        C, batch_ind = self.check_device(C, batch_ind)
+        C, batch_ind = self.check_device(C, batch_ind)  # pylint: disable=unbalanced-tuple-unpacking
         # in total data matrix, control first, treated second
         for i, ib in enumerate(batch_ind):
             if ib < self.n_unit:
                 self.C0[ib] = C[i].detach()
 
     def self_expressive_loss(self, C, B_reduced):
-        C, B_reduced = self.check_device(C, B_reduced)
+        C, B_reduced = self.check_device(C, B_reduced)  # pylint: disable=unbalanced-tuple-unpacking
 
         err = C - torch.matmul(B_reduced, self.C0)
         err_mse = torch.mean(err[~torch.isnan(err)] ** 2)
@@ -103,13 +145,15 @@ class SyncTwin(nn.Module):
     def reconstruction_loss(self, x, x_hat, mask):
         if self.lam_recon == 0:
             return 0
-        x, x_hat, mask = self.check_device(x, x_hat, mask)
+        x, x_hat, mask = self.check_device(x, x_hat, mask)  # pylint: disable=unbalanced-tuple-unpacking
         err = (x - x_hat) * mask
         err_mse = torch.sum(err ** 2) / torch.sum(mask)
         return err_mse * self.lam_recon
 
     def prognostic_loss(self, B_reduced, y_batch, y_control, y_mask):
-        B_reduced, y_batch, y_control, y_mask = self.check_device(B_reduced, y_batch, y_control, y_mask)
+        B_reduced, y_batch, y_control, y_mask = self.check_device(  # pylint: disable=unbalanced-tuple-unpacking
+            B_reduced, y_batch, y_control, y_mask
+        )
         # y_batch: B, DY
         # y_mask: B (1 if control, 0 if treated)
         # y_all: N0, DY
@@ -119,13 +163,21 @@ class SyncTwin(nn.Module):
         return torch.sum(((y_batch - y_hat) ** 2) * y_mask.unsqueeze(-1)) / torch.sum(y_mask) * self.lam_prognostic
 
     def prognostic_loss2(self, y, y_hat, mask):
-        y, y_hat, mask = self.check_device(y, y_hat, mask)
+        y, y_hat, mask = self.check_device(y, y_hat, mask)  # pylint: disable=unbalanced-tuple-unpacking
         err = (y - y_hat) * mask
         err_mse = torch.sum(err ** 2) / torch.sum(mask)
         return err_mse * self.lam_prognostic
 
     def forward(self, x, t, mask, batch_ind, y_batch, y_control, y_mask):
-        x, t, mask, batch_ind, y_batch, y_control, y_mask = self.check_device(x, t, mask, batch_ind, y_batch, y_control, y_mask)
+        (  # pylint: disable=unbalanced-tuple-unpacking
+            x,
+            t,
+            mask,
+            batch_ind,
+            y_batch,
+            y_control,
+            y_mask,
+        ) = self.check_device(x, t, mask, batch_ind, y_batch, y_control, y_mask)
         C = self.get_representation(x, t, mask)
         x_hat = self.get_reconstruction(C, t, mask)
 
@@ -153,7 +205,7 @@ class RegularEncoder(nn.Module):
 
     def forward(self, x, t, mask):
         # T, B, Dh
-        h, _ = self.lstm(x)
+        h, _ = self.lstm(x)  # pylint: disable=not-callable
 
         # T, B
         attn_score = torch.matmul(h, self.attn_v) / math.sqrt(self.hidden_dim)
@@ -162,7 +214,6 @@ class RegularEncoder(nn.Module):
         # B, Dh
         C = torch.sum(h * attn_weight.unsqueeze(-1), dim=0)
         return C
-
 
 
 class GRUDEncoder(nn.Module):
@@ -181,7 +232,7 @@ class GRUDEncoder(nn.Module):
         grud_in = self.grud.get_input_for_grud(t, x, mask)
 
         # T, B, Dh
-        h = self.grud(grud_in).permute((1, 0, 2))
+        h = self.grud(grud_in).permute((1, 0, 2))  # pylint: disable=not-callable
 
         # T, B
         attn_score = torch.matmul(h, self.attn_v) / math.sqrt(self.hidden_dim)
@@ -202,13 +253,13 @@ class RegularDecoder(nn.Module):
 
     def forward(self, C, t, mask):
         # C: B, Dh
-        out, hidden = self.lstm(C.unsqueeze(0))
+        out, hidden = self.lstm(C.unsqueeze(0))  # pylint: disable=not-callable
         out = self.lin(out)
 
         out_list = [out]
         # run the remaining iterations
         for t in range(self.max_seq_len - 1):
-            out, hidden = self.lstm(C.unsqueeze(0), hidden)
+            out, hidden = self.lstm(C.unsqueeze(0), hidden)  # pylint: disable=not-callable
             out = self.lin(out)
             out_list.append(out)
 
@@ -231,14 +282,14 @@ class LSTMTimeDecoder(nn.Module):
 
         # C: B, Dh
         lstm_in = torch.cat((C.unsqueeze(0), time_encoded[0:1, ...]), dim=-1)
-        out, hidden = self.lstm(lstm_in)
+        out, hidden = self.lstm(lstm_in)  # pylint: disable=not-callable
         out = self.lin(out)
 
         out_list = [out]
         # run the remaining iterations
         for t in range(self.max_seq_len - 1):
-            lstm_in = torch.cat((C.unsqueeze(0), time_encoded[(t+1):(t+2), ...]), dim=-1)
-            out, hidden = self.lstm(lstm_in, hidden)
+            lstm_in = torch.cat((C.unsqueeze(0), time_encoded[(t + 1) : (t + 2), ...]), dim=-1)
+            out, hidden = self.lstm(lstm_in, hidden)  # pylint: disable=not-callable
             out = self.lin(out)
             out_list.append(out)
 
@@ -262,7 +313,7 @@ class GRUDDecoder(nn.Module):
         grud_in = self.grud.get_input_for_grud(t, x, mask)
 
         # T, B, Dh
-        h = self.grud(grud_in).permute((1, 0, 2))
+        h = self.grud(grud_in).permute((1, 0, 2))  # pylint: disable=not-callable
         out = self.lin(h)
 
         return out
@@ -278,7 +329,7 @@ class LinearDecoder(nn.Module):
 
     def forward(self, C, t, mask):
         # C: B, Dh -> B, T
-        out = self.lin(C)
+        out = self.lin(C)  # pylint: disable=not-callable
         out = out.T.unsqueeze(-1)
 
         return out

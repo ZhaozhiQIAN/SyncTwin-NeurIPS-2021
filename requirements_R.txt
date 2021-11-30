@@ -1,4 +1,4 @@
-# benchmarks implemented in R
+# Benchmarks implemented in R
 softImpute==1.4
 Synth==1.1
 

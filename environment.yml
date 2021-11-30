@@ -1,0 +1,25 @@
+name: py37_synctwin
+channels:
+  - powerai
+  - pytorch
+  - conda-forge
+  - defaults
+dependencies:
+  - cudatoolkit=11.3.1
+  - ipykernel=6.5.0
+  - matplotlib=3.4.3
+  - numpy-base=1.21.2
+  - pandas=1.3.4
+  - pip=21.0.1
+  - python=3.7.11
+  - pytorch=1.10.0
+  - r-base=3.6.1
+  - r-softimpute=1.4
+  - r-synth=1.1_5
+  - scikit-learn=1.0.1
+  - scipy=1.7.1
+  - tqdm=4.62.3
+  - pip:
+    - gpy==1.10.0
+    - numpy==1.18.5
+    - tensorflow==1.15.5

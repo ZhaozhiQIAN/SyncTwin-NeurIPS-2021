@@ -1,9 +1,25 @@
-import torch
 import matplotlib.pyplot as plt
 import numpy as np
+import torch
+
+# def get_prediction(nsc, batch_ind_full, y_control, itr=500):
+#     y_hat_list = list()
+#     for i in range(itr):
+#         with torch.no_grad():
+#             B_reduced = nsc.get_B_reduced(batch_ind_full)
+#             y_hat = torch.matmul(B_reduced, y_control)
+#             if torch.sum(torch.isinf(y_hat)).item() == 0:
+#                 y_hat_list.append(y_hat)
+
+#     y_hat_mat = torch.stack(y_hat_list, dim=-1)
+#     y_hat_mat[torch.isinf(y_hat_mat)] = 0.0
+#     y_hat2 = torch.mean(y_hat_mat, dim=-1)
+#     return y_hat2
 
 
 def get_prediction(nsc, batch_ind_full, y_control, itr=500):
+    batch_ind_full = batch_ind_full.to(nsc.B.device)
+    y_control = y_control.to(nsc.B.device)
     y_hat_list = list()
     for i in range(itr):
         with torch.no_grad():
@@ -13,27 +29,15 @@ def get_prediction(nsc, batch_ind_full, y_control, itr=500):
                 y_hat_list.append(y_hat)
 
     y_hat_mat = torch.stack(y_hat_list, dim=-1)
-    y_hat_mat[torch.isinf(y_hat_mat)] = 0.
+    y_hat_mat[torch.isinf(y_hat_mat)] = 0.0
     y_hat2 = torch.mean(y_hat_mat, dim=-1)
     return y_hat2
 
-def get_prediction(nsc, batch_ind_full, y_control, itr=500):
-        batch_ind_full = batch_ind_full.to(nsc.B.device)
-        y_control = y_control.to(nsc.B.device)
-        y_hat_list = list()
-        for i in range(itr):
-            with torch.no_grad():
-                B_reduced = nsc.get_B_reduced(batch_ind_full)
-                y_hat = torch.matmul(B_reduced, y_control)
-                if torch.sum(torch.isinf(y_hat)).item() == 0:
-                    y_hat_list.append(y_hat)
-
-        y_hat_mat = torch.stack(y_hat_list, dim=-1)
-        y_hat_mat[torch.isinf(y_hat_mat)] = 0.
-        y_hat2 = torch.mean(y_hat_mat, dim=-1)
-        return y_hat2
 
 def get_treatment_effect(nsc, batch_ind_full, y_full, y_control, itr=500):
+    batch_ind_full = batch_ind_full.to(nsc.B.device)
+    y_control = y_control.to(nsc.B.device)
+    y_full = y_full.to(nsc.B.device)
     y_hat_list = list()
     for i in range(itr):
         with torch.no_grad():
@@ -43,33 +47,33 @@ def get_treatment_effect(nsc, batch_ind_full, y_full, y_control, itr=500):
                 y_hat_list.append(y_hat)
 
     y_hat_mat = torch.stack(y_hat_list, dim=-1)
-    y_hat_mat[torch.isinf(y_hat_mat)] = 0.
+    y_hat_mat[torch.isinf(y_hat_mat)] = 0.0
     y_hat2 = torch.mean(y_hat_mat, dim=-1)
-    return (y_full - y_hat2)[:, nsc.n_unit:, :],  y_hat2
+    return (y_full - y_hat2)[:, nsc.n_unit :, :], y_hat2
+
 
 def summarize_B(mat_b, show_plot=True):
     if show_plot:
-        plt.imshow(mat_b, cmap='hot', interpolation='nearest')
+        plt.imshow(mat_b, cmap="hot", interpolation="nearest")
     ind = np.sum(mat_b, axis=1) != 0
     mat_b = mat_b[ind]
     gini = np.mean(np.sum(mat_b * (1 - mat_b), axis=1))
     gini_sd = np.std(np.sum(mat_b * (1 - mat_b), axis=1)) / np.sqrt(mat_b.shape[0])
 
-    wrong_proba = np.mean(np.sum(mat_b[:, (mat_b.shape[1] // 2):], axis=1))
-    wrong_proba_sd = np.std(np.sum(mat_b[:, (mat_b.shape[1] // 2):], axis=1)) / np.sqrt(mat_b.shape[0])
+    wrong_proba = np.mean(np.sum(mat_b[:, (mat_b.shape[1] // 2) :], axis=1))
+    wrong_proba_sd = np.std(np.sum(mat_b[:, (mat_b.shape[1] // 2) :], axis=1)) / np.sqrt(mat_b.shape[0])
 
-    entropy = np.mean(np.sum(mat_b * np.log(mat_b + 1E-9), axis=1)) * -1
-    entropy_sd = np.std(np.sum(mat_b * np.log(mat_b + 1E-9), axis=1)) / np.sqrt(mat_b.shape[0])
+    entropy = np.mean(np.sum(mat_b * np.log(mat_b + 1e-9), axis=1)) * -1
+    entropy_sd = np.std(np.sum(mat_b * np.log(mat_b + 1e-9), axis=1)) / np.sqrt(mat_b.shape[0])
     mis_class = np.sum(np.argmax(mat_b, axis=1) > mat_b.shape[1] / 2) / mat_b.shape[0]
     mis_class_sd = np.sqrt(mis_class * (1 - mis_class) / mat_b.shape[0])
     non_zeros = np.mean(np.sum(mat_b > 0.05, axis=1))
     non_zeros_sd = np.std(np.sum(mat_b > 0.05, axis=1)) / np.sqrt(mat_b.shape[0])
-    print('Gini {:.3f} ({:.3f})'.format(gini, gini_sd))
-    print('Ent {:.3f} ({:.3f})'.format(entropy, entropy_sd))
-    print('N Matched {:.3f} ({:.3f})'.format(non_zeros, non_zeros_sd))
-    print('MIS {:.3f} ({:.3f})'.format(mis_class, mis_class_sd))
-    print('Wrong proba {:.3f} ({:.3f})'.format(wrong_proba, wrong_proba_sd))
-
+    print("Gini {:.3f} ({:.3f})".format(gini, gini_sd))
+    print("Ent {:.3f} ({:.3f})".format(entropy, entropy_sd))
+    print("N Matched {:.3f} ({:.3f})".format(non_zeros, non_zeros_sd))
+    print("MIS {:.3f} ({:.3f})".format(mis_class, mis_class_sd))
+    print("Wrong proba {:.3f} ({:.3f})".format(wrong_proba, wrong_proba_sd))
 
     return gini, gini_sd, mis_class, mis_class_sd, non_zeros, non_zeros_sd
 
@@ -82,7 +86,18 @@ def effect_mae_from_w(mat_w, n_units, y_control, y_full, treatment_effect):
     sc_mae_effect_sd = torch.std(torch.abs(treatment_effect - sc_effect_est)).item() / np.sqrt(mat_w.shape[0])
     return sc_mae_effect, sc_mae_effect_sd
 
-def summary_simulation(nsc, B_best, x_full, t_full, mask_full, batch_ind_full, y_full, y_control, plot_path='plots/sync/unit-{}-dim-{}-{}.png'):
+
+def summary_simulation(
+    nsc,
+    B_best,
+    x_full,
+    t_full,
+    mask_full,
+    batch_ind_full,
+    y_full,
+    y_control,
+    plot_path="plots/sync/unit-{}-dim-{}-{}.png",
+):
 
     with torch.no_grad():
         C = nsc.get_representation(x_full, t_full, mask_full)
@@ -100,8 +115,8 @@ def summary_simulation(nsc, B_best, x_full, t_full, mask_full, batch_ind_full, y
             C_best = torch.matmul(B_best, nsc.C0)
             self_expressive_best = nsc.self_expressive_loss(C, B_best).item()
 
-    print('self_expressive_loss: ', self_expressive_loss)
-    print('reconstruction_loss: ', reconstruction_loss)
+    print("self_expressive_loss: ", self_expressive_loss)
+    print("reconstruction_loss: ", reconstruction_loss)
     x_np = x_full.cpu().numpy()
     y_np = y_full.cpu().numpy()
     y_hat = y_hat.cpu().numpy()
@@ -114,42 +129,42 @@ def summary_simulation(nsc, B_best, x_full, t_full, mask_full, batch_ind_full, y
 
     # heatmap for matrix B
     plt.clf()
-    plt.imshow(B_reduced.detach().cpu().numpy(), cmap='hot', interpolation='nearest')
-    plt.savefig(plot_path.format(0, 0, 'B-heatmap'))
+    plt.imshow(B_reduced.detach().cpu().numpy(), cmap="hot", interpolation="nearest")
+    plt.savefig(plot_path.format(0, 0, "B-heatmap"))
 
     dim = 1
     for unit in range(12):
 
         # reconstruction
         plt.clf()
-        plt.plot(x_np[:, unit, dim], label='true')
-        plt.plot(x_hat[:, unit, dim], label='estimate')
+        plt.plot(x_np[:, unit, dim], label="true")
+        plt.plot(x_hat[:, unit, dim], label="estimate")
         plt.legend()
-        plt.savefig(plot_path.format(unit, dim, 'reconstruction'))
+        plt.savefig(plot_path.format(unit, dim, "reconstruction"))
 
         # treatment effect y
         plt.clf()
-        plt.plot(y_np[:, unit, 0], label='true')
-        plt.plot(y_hat[:, unit, 0], label='estimate')
+        plt.plot(y_np[:, unit, 0], label="true")
+        plt.plot(y_hat[:, unit, 0], label="estimate")
         if B_best is not None:
-            plt.plot(y_best[:, unit, 0], label='best')
+            plt.plot(y_best[:, unit, 0], label="best")
         plt.legend()
-        plt.savefig(plot_path.format(unit, dim, 'treatment'))
+        plt.savefig(plot_path.format(unit, dim, "treatment"))
 
         # B matrix
         plt.clf()
         with torch.no_grad():
-            plt.plot(B_reduced.cpu().numpy()[unit], label='estimate')
+            plt.plot(B_reduced.cpu().numpy()[unit], label="estimate")
             if B_best is not None:
-                plt.plot(B_best.cpu().numpy()[unit], label='best')
+                plt.plot(B_best.cpu().numpy()[unit], label="best")
             plt.legend()
-            plt.savefig(plot_path.format(unit, dim, 'B'))
+            plt.savefig(plot_path.format(unit, dim, "B"))
 
         # representation
         plt.clf()
-        plt.plot(C_np[unit], label='true')
-        plt.plot(C_hat[unit], label='estimate')
+        plt.plot(C_np[unit], label="true")
+        plt.plot(C_hat[unit], label="estimate")
         if B_best is not None:
-            plt.plot(C_best[unit], label='best')
+            plt.plot(C_best[unit], label="best")
         plt.legend()
-        plt.savefig(plot_path.format(unit, dim, 'C'))
+        plt.savefig(plot_path.format(unit, dim, "C"))

@@ -7,15 +7,17 @@ https://github.com/SucreRouge/synth_control
 
 
 from __future__ import division
-from matplotlib import colors as mcolors
+
 import matplotlib.pyplot as plt
 import numpy as np
-from synth_functions import *
+
+from synth_functions import learn, swap
 
 
-class Synth():
-    def __init__(self, treat_unit, year, prior_param=0.5, method="linear", p=1, num_sv=1,
-                 drop=False, drop_list=[]):
+class Synth:
+    def __init__(self, treat_unit, year, prior_param=0.5, method="linear", p=1, num_sv=1, drop=False, drop_list=None):
+        if drop_list is None:
+            drop_list = []
         self.treat_unit = treat_unit
         self.year = year
         self.p = p
@@ -43,16 +45,26 @@ class Synth():
         self.Y = np.copy(X)
 
         # missing at random
-        #X = MAR(X, self.p)
+        # X = MAR(X, self.p)
 
         # estimation
         self.beta, self.mean, self.sigma_hat = learn(
-            X, self.year, num_sv=self.num_sv, method=self.method, prior_param=self.prior_param)
+            X, self.year, num_sv=self.num_sv, method=self.method, prior_param=self.prior_param
+        )
 
-    def vis_data(self, xlabel="year", ylabel="metric", title="Case Study",
-                 orig_label="observed data", mean_label="counterfactual mean",
-                 year_shift=0, year_mod=5, loc="best",
-                 lw=1.75, frame_color='0.925'):
+    def vis_data(
+        self,
+        xlabel="year",
+        ylabel="metric",
+        title="Case Study",
+        orig_label="observed data",
+        mean_label="counterfactual mean",
+        year_shift=0,
+        year_mod=5,
+        loc="best",
+        lw=1.75,
+        frame_color="0.925",
+    ):
         self.xlabel = xlabel
         self.ylabel = ylabel
         self.title = title
@@ -66,21 +78,20 @@ class Synth():
 
     def vis(self, abadie):
         fig, ax = plt.subplots()
-        ax.plot(self.orig, label=self.orig_label, linewidth=self.lw, color='g')
-        ax.plot(self.mean, '--', label=self.mean_label, linewidth=self.lw, color='b')
-        #ax.plot(abadie, '--', label="abadie", linewidth=self.lw, color='r')
+        ax.plot(self.orig, label=self.orig_label, linewidth=self.lw, color="g")
+        ax.plot(self.mean, "--", label=self.mean_label, linewidth=self.lw, color="b")
+        # ax.plot(abadie, '--', label="abadie", linewidth=self.lw, color='r')
         x_ = np.linspace(0, len(self.mean) - 1, len(self.mean))
-        clr1 = 'lightcyan'
-        clr2 = 'paleturquoise'
+        clr1 = "lightcyan"
+        clr2 = "paleturquoise"
         upper = self.mean + self.sigma_hat
         lower = self.mean - self.sigma_hat
         ax.fill_between(x_, self.mean, upper, facecolor=clr1, edgecolor=clr2, interpolate=True)
         ax.fill_between(x_, self.mean, lower, facecolor=clr1, edgecolor=clr2, interpolate=True)
-        legend = ax.legend(loc=self.loc, shadow=True, prop={'size': 9.5})
+        legend = ax.legend(loc=self.loc, shadow=True, prop={"size": 9.5})
         frame = legend.get_frame()
         frame.set_facecolor(self.frame_color)
-        ax.plot([self.year, self.year], [ax.get_ylim()[0], ax.get_ylim()[1]],
-                '--', linewidth=self.lw, color='r')
+        ax.plot([self.year, self.year], [ax.get_ylim()[0], ax.get_ylim()[1]], "--", linewidth=self.lw, color="r")
         years = int(np.floor(self.orig.shape[0] / self.year_mod))
         x = np.array([self.year_mod * i for i in range(years + 1)])
         ax.set_ylim([ax.get_ylim()[0], ax.get_ylim()[1]])

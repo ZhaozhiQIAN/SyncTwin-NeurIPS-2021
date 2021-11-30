@@ -1,8 +1,8 @@
-import torch
 import numpy as np
 import numpy.random
+import torch
 
-DEVICE = torch.device('cuda:' + str(1) if torch.cuda.is_available() else 'cpu')
+from config import DEVICE
 
 
 def get_batch_all(batch_size, n_units_total, n_units, x, y, y_control, device=DEVICE):
@@ -14,7 +14,7 @@ def get_batch_all(batch_size, n_units_total, n_units, x, y, y_control, device=DE
 
     t_batch = torch.ones_like(x_batch)
     mask_batch = torch.ones_like(x_batch)
-    y_mask_batch = (batch_ind < n_units) * 1.
+    y_mask_batch = (batch_ind < n_units) * 1.0
     return (x_batch, t_batch, mask_batch, batch_ind, y_batch, y_control, y_mask_batch), batch_ind
 
 
@@ -33,7 +33,7 @@ def get_batch_standard(batch_size, *args):
     return mini_batch
 
 
-def get_folds(start=0, split=1, *args):
+def get_folds(start, split, *args):
     a = args
     ret = []
 
@@ -44,6 +44,7 @@ def get_folds(start=0, split=1, *args):
             y = x[start::split]
         ret.append(y)
     return ret
+
 
 def get_splits(start=0, split=1, args=None):
     # split on first dimension
@@ -62,13 +63,13 @@ def get_split_inference(n0_val, n1_val, n_units_val, arr_list, group, nth=0):
     for a in arr_list:
         if a.dim() == 3:
             if group == 0:
-                a_ret = a[:, (nth * n0_val):(nth * n0_val + n0_val), :]
+                a_ret = a[:, (nth * n0_val) : (nth * n0_val + n0_val), :]
             else:
-                a_ret = a[:, (n_units_val + nth * n1_val):(n_units_val + nth * n1_val + n1_val), :]
+                a_ret = a[:, (n_units_val + nth * n1_val) : (n_units_val + nth * n1_val + n1_val), :]
         else:
             if group == 0:
-                a_ret = a[(nth * n0_val):(nth * n0_val + n0_val)]
+                a_ret = a[(nth * n0_val) : (nth * n0_val + n0_val)]
             else:
-                a_ret = a[(n_units_val + nth * n1_val):(n_units_val + nth * n1_val + n1_val)]
+                a_ret = a[(n_units_val + nth * n1_val) : (n_units_val + nth * n1_val + n1_val)]
         ret.append(a_ret)
     return ret

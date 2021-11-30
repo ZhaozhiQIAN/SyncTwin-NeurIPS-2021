@@ -3,10 +3,10 @@ import numpy.random
 import scipy.integrate
 import torch
 
-DEVICE = torch.device('cuda:' + str(1) if torch.cuda.is_available() else 'cpu')
+from config import DEVICE
 
 
-def f(t, y, Kin, K, O, H, D50):
+def f(t, y, Kin, K, O, H, D50):  # noqa: E741
     P = y[0]
     R = y[1]
     D = y[2]
@@ -19,16 +19,16 @@ def f(t, y, Kin, K, O, H, D50):
 
 
 def solve(init, Kin, K, Os, H, D50, step=30):
-    ode = scipy.integrate.ode(f).set_integrator('dopri5')
+    ode = scipy.integrate.ode(f).set_integrator("dopri5")
 
-    Ot = np.zeros(step+1)
+    Ot = np.zeros(step + 1)
     if Os >= 0:
-        Ot[Os:] = 1.
+        Ot[Os:] = 1.0
 
     try:
         len(Kin)
-    except Exception:
-        Kin = np.ones(step+1) * Kin
+    except Exception:  # pylint: disable=broad-except
+        Kin = np.ones(step + 1) * Kin
 
     ode.set_initial_value(init, 0).set_f_params(Kin, K, Ot, H, D50)
     t1 = step
@@ -43,6 +43,7 @@ def solve(init, Kin, K, Os, H, D50, step=30):
     res = np.stack(res_list, axis=-1)
     return res
 
+
 def get_Kin(step=30, n_basis=12):
     # define Kin
     Kin_b_list = list()
@@ -50,7 +51,7 @@ def get_Kin(step=30, n_basis=12):
     x = np.arange(step + 1) / step
     Kin_b_list.append(x)
 
-    for i in range(n_basis-2):
+    for i in range(n_basis - 2):
         bn = 2 * x * Kin_b_list[-1] - Kin_b_list[-2]
         Kin_b_list.append(bn)
 
@@ -65,13 +66,13 @@ def get_clustered_Kin(Kin_b, n_cluster, n_sample_total):
 
     n_sample_cluster = n_sample_total // n_cluster
     if n_sample_total % n_cluster != 0:
-        print('Warning: sample size not divisible by number of clusters')
+        print("Warning: sample size not divisible by number of clusters")
 
     # generate cluster masks
     mask_list = []
     for i in range(n_cluster):
         mask = np.zeros(n_basis)
-        mask[i:-1:4] = 1.
+        mask[i:-1:4] = 1.0
         mask_list.append(mask)
 
     Kin_list = []
@@ -101,7 +102,7 @@ def generate_data(Kin_list, K_list, P0_list, R0_list, train_step, H=0.1, D50=3, 
         for K in K_list:
             for P0 in P0_list:
                 for R0 in R0_list:
-                    control_res = solve([P0, R0, 0.], Kin, K, train_step, H, D50, step)
+                    control_res = solve([P0, R0, 0.0], Kin, K, train_step, H, D50, step)
                     control_res_list.append(control_res)
 
     control_res_arr = np.stack(control_res_list, axis=-1)
@@ -110,7 +111,19 @@ def generate_data(Kin_list, K_list, P0_list, R0_list, train_step, H=0.1, D50=3, 
     # slice on dim=1 to get the outcome of interest
     return control_res_arr
 
-def get_covariate(control_Kin_b, treat_Kin_b, control_res_arr, treat_res_arr, step=30, train_step=25, device=DEVICE, noise=None, double_up=False, hidden_confounder=0):
+
+def get_covariate(
+    control_Kin_b,
+    treat_Kin_b,
+    control_res_arr,
+    treat_res_arr,
+    step=30,
+    train_step=25,
+    device=DEVICE,
+    noise=None,
+    double_up=False,
+    hidden_confounder=0,
+):
     n_units = control_res_arr.shape[-1] * 2 if double_up else control_res_arr.shape[-1]
     n_treated = treat_res_arr.shape[-1]
 
@@ -130,7 +143,7 @@ def get_covariate(control_Kin_b, treat_Kin_b, control_res_arr, treat_res_arr, st
     covariates = (covariates - m) / sd
 
     if double_up:
-        covariates_control = covariates[:, :(covariates.shape[1] // 2), :]
+        covariates_control = covariates[:, : (covariates.shape[1] // 2), :]
         covariates_twin = covariates_control + torch.randn_like(covariates_control) * 0.1
         covariates = torch.cat([covariates_twin, covariates], dim=1)
 
@@ -154,9 +167,20 @@ def get_covariate(control_Kin_b, treat_Kin_b, control_res_arr, treat_res_arr, st
     t_full = torch.ones_like(x_full)
     mask_full = torch.ones_like(x_full)
     batch_ind_full = torch.arange(n_units_total).to(DEVICE)
-    y_mask_full = (batch_ind_full < n_units) * 1.
-    return (n_units, n_treated, n_units_total), \
-           x_full, t_full, mask_full, batch_ind_full, y_full, y_control, y_mask_full, y_full_all, m, sd
+    y_mask_full = (batch_ind_full < n_units) * 1.0
+    return (
+        (n_units, n_treated, n_units_total),
+        x_full,
+        t_full,
+        mask_full,
+        batch_ind_full,
+        y_full,
+        y_control,
+        y_mask_full,
+        y_full_all,
+        m,
+        sd,
+    )
 
 
 def get_treatment_effect(treat_res_arr, treat_counterfactual_arr, train_step, m, sd, device=DEVICE):
