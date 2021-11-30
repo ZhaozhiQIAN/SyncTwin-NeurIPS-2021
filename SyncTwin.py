@@ -7,7 +7,7 @@ import torch.nn.functional as F
 import GRUD
 from config import D_TYPE, DEVICE
 
-WRAP_INDEX_ON = True
+WRAP_INDEX_ON = False  # To run old code set WRAP_INDEX_ON to True, otherwise keep this as False.
 
 
 # former NSC
@@ -105,13 +105,18 @@ class SyncTwin(nn.Module):
         # mask = torch.zeros_like(B_reduced)
         # mask[torch.arange(batch_index.shape[0]), batch_index] = 1.
 
-        mask_inf = torch.zeros_like(B_reduced)
-        ind_0, ind_1 = torch.arange(batch_ind.shape[0]), batch_ind
         if WRAP_INDEX_ON:
+            # Only enable this codepath to run old code (as at time of paper publication).
+            mask_inf = torch.zeros_like(B_reduced)
+            ind_0, ind_1 = torch.arange(batch_ind.shape[0]), batch_ind
             ind_0, ind_1 = self._wrap_index(ind_0, ind_1, mask_inf)
+            mask_inf[ind_0, ind_1] = torch.Tensor([float("-inf")])
         else:
-            raise NotImplementedError()
-        mask_inf[ind_0, ind_1] = torch.Tensor([float("-inf")])
+            # Keep WRAP_INDEX_ON = False to use this newer corrected code.
+            # *Model performance is unaffected by this fix.*
+            mask_inf = torch.zeros(len(batch_ind), len(batch_ind)).to(B_reduced)
+            mask_inf[batch_ind, batch_ind] = torch.Tensor([float("-inf")])
+            mask_inf = mask_inf[: B_reduced.shape[0], : B_reduced.shape[1]]
 
         B_reduced = B_reduced + mask_inf
         # softmax
